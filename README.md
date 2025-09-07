@@ -1,4 +1,3 @@
-<div align="center">
   <a href="https://speclynx.com"><img width="739" height="103" alt="image" src="https://github.com/user-attachments/assets/87c88ea9-5746-497a-8c33-43fa55b72b0b" /></a>
   <p>
     Stop wrestling with OpenAPI specs — SpecLynx OpenAPI Toolkit delivers the most effective way to author and manage your API specs, bringing unprecedented ease, pinpoint accuracy, and unmatched power directly to your VSCode workflow.  
@@ -54,11 +53,22 @@ We are actively expanding the feature set and fixing bugs; this documentation wi
 
 **Swagger/OpenAPI 2.0, OpenAPI 3.0, and 3.1** — OpenAPI Toolkit supports all of these versions with a consistent feature set.
 
+
+<img width="929" height="837" alt="image" src="https://github.com/user-attachments/assets/6a6f45c3-2e00-469f-8b01-aaa1731f750e" />
+<img width="929" height="837" alt="image" src="https://github.com/user-attachments/assets/be76e16e-b01e-4697-b392-630e9381bebb" />
+
+
+
 **Web support** — OpenAPI Toolkit is designed to run both on Desktop and in Web environments such as [vscode.dev](https://vscode.dev/), [github.dev](https://github.dev/), and [GitHub Codespaces](https://github.com/features/codespaces). It is one of the few extensions that deliver advanced OpenAPI editing and validation/linting in the web environment.&#x20;
+
+
 
 #### In-context OpenAPI Documentation (hover)
 
 When you hover over a keyword (node key) in the document, the extension shows full, context-aware documentation in a hover panel that corresponds to the selected construct and matches the official specification.
+
+<img width="1306" height="519" alt="image" src="https://github.com/user-attachments/assets/b3b1de49-de9f-4f9c-a318-11afc00a25b9" />
+
 
 The same documentation is also shown in the details pane of completion items. See the “Completion / Suggestions” section below.&#x20;
 
@@ -71,13 +81,20 @@ OpenAPI Toolkit provides an enriched completion experience. Under the hood, comp
 Each completion item includes full documentation (the same content shown in hover).
 **Tip:** If the documentation panel doesn’t appear to the right of the completion label, click the `>` icon that appears when you hover the completion entry.&#x20;
 
+<img width="816" height="369" alt="image" src="https://github.com/user-attachments/assets/853d8932-06f8-4964-ac40-f0a16ad06f5e" />
+
 ##### References completion
 
-When completion is triggered within the value of a `$ref` field, the editor offers suggestions of compatible targets found in the document (this will be expanded to include documents across the workspace).&#x20;
+When completion is triggered within the value of a `$ref` field, the editor offers suggestions of compatible targets found in the document (this will be expanded to include documents across the workspace). It also displays the referenced content in the completion box, providing an in-context view of potential references without losing focus&#x20;
+
+<img width="987" height="524" alt="image" src="https://github.com/user-attachments/assets/4d250e05-bc9f-44a5-a22f-ad52412e1157" />
+
 
 ##### Context-aware completion (e.g., `type: integer` → `format`)
 
 Suggestions adapt to related fields. For example, if a schema sets `type: integer`, the `format` suggestions include only compatible values.&#x20;
+
+<img width="942" height="417" alt="image" src="https://github.com/user-attachments/assets/532429ba-59b0-4ebd-b593-05d2e95e291f" />
 
 #### References
 
@@ -85,25 +102,40 @@ Suggestions adapt to related fields. For example, if a schema sets `type: intege
 
 Hovering over the value of a `$ref` field displays the referenced content in the hover box, providing an in-context view of references without losing focus.&#x20;
 
+<img width="605" height="613" alt="image" src="https://github.com/user-attachments/assets/9a9a1db9-1292-404c-861a-a6ca8d5c34cd" />
+
+
 ##### Go to definition (F3)
 
 Right-click the value of a `$ref` field and choose **Go to Definition** (or press **F3**) to jump to the reference target—either within the current file or in another file in the workspace.&#x20;
+
+<img width="603" height="217" alt="image" src="https://github.com/user-attachments/assets/86fa803e-57fe-4482-9fa3-063501e59cc7" />
 
 ##### Go to references
 
 Right-click a key (for example, under `components.schemas`) and choose **Go to References** to open a panel listing available references to jump to.&#x20;
 
+<img width="1699" height="325" alt="image" src="https://github.com/user-attachments/assets/e68591bf-3ef0-4fb1-9aba-579ba2e56d77" />
+
 ##### Find all references
 
 Right-click a key (for example, of a schema) and choose **Find All References** to open the References panel listing every usage of the selected target.&#x20;
+
+<img width="890" height="672" alt="image" src="https://github.com/user-attachments/assets/62a8fad3-129e-460c-8c8a-c765beffafe2" />
+
 
 ##### Dereference command
 
 Right-click inside an OpenAPI document or right-click the file in the Explorer, then choose **OpenAPI Toolkit → Dereference API Document** to save a dereferenced copy locally. The default output name is `{filename}-dereferenced.{extension}`.&#x20;
 
+<img width="816" height="429" alt="image" src="https://github.com/user-attachments/assets/a47f3d10-6c16-487d-a7ab-c8121f0c41f6" />
+
 #### Syntax Highlighting
 
 OpenAPI Toolkit provides **semantic** syntax highlighting, going beyond basic keyword coloring. Specific OpenAPI elements—such as operations, schemas, and reference objects—are highlighted with distinct colors and font styles. This helps you quickly recognize and distinguish different parts of an API definition, improving readability and navigation in complex specifications.&#x20;
+
+<img width="819" height="634" alt="image" src="https://github.com/user-attachments/assets/90120937-c759-4399-89e4-4172c38041f3" />
+
 
 #### Validation and Linting
 
@@ -122,6 +154,8 @@ OpenAPI Toolkit supports three modes, which you can combine:
 2. **Spectral validation and linting**
 3. **Semantic validation and linting**&#x20;
 
+<img width="1126" height="1147" alt="image" src="https://github.com/user-attachments/assets/4d5fada5-c1d2-4e22-adc5-337b02383f82" />
+
 ##### Default configuration
 
 By default, JSON Schema validation and **semantic linting** are enabled. You can change this in the extension settings. **Semantic validation** is currently disabled by default because it has not yet completed a full compliance test cycle; once complete, it is expected to become the default validation method.&#x20;
@@ -137,9 +171,17 @@ To enable Spectral-based checks:
 
 Refer to the [Spectral documentation](https://docs.stoplight.io/docs/spectral/) for ruleset format details.&#x20;
 
+<img width="1297" height="342" alt="image" src="https://github.com/user-attachments/assets/10ac8f88-17f0-4b80-8215-29de50b2b636" />
+
+<img width="642" height="548" alt="image" src="https://github.com/user-attachments/assets/1ba22574-7fc3-4708-a3ce-ce85f60f7ac7" />
+
+
 ##### Semantic validation
 
 Enable **Apply Semantic Validation** in the extension settings. No rules file is required to run the built-in semantic validation checks.&#x20;
+
+<img width="1158" height="145" alt="image" src="https://github.com/user-attachments/assets/6c02c589-aaff-411f-b791-058b12f4cc5d" />
+
 
 ##### Semantic linting
 
@@ -159,6 +201,8 @@ Semantic lint rules are defined in JSON or YAML. A ruleset typically includes:
 * **Target selector**: a semantic **element type** (e.g., `operation`, `schema`, `parameter`, etc.) and/or a **JSONPath** for precise targeting
 * **Condition(s)** to evaluate (e.g., required fields, naming patterns, min/max constraints)
 * **Optional fixes** or suggestions (when applicable)
+
+<img width="515" height="320" alt="image" src="https://github.com/user-attachments/assets/dfe5d693-f293-4b84-b0b7-50f10fa24e64" />
 
 A separate section provides the complete rule schema and examples. *(If you don’t see it yet, it will be added as the rules stabilize.)*&#x20;
 
