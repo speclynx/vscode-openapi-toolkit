@@ -1,11 +1,8 @@
+<div>
   <a href="https://speclynx.com"><img width="739" height="103" alt="image" src="https://github.com/user-attachments/assets/87c88ea9-5746-497a-8c33-43fa55b72b0b" /></a>
+  <br><br>
   <p>
     Stop wrestling with OpenAPI specs — SpecLynx OpenAPI Toolkit delivers the most effective way to author and manage your API specs, bringing unprecedented ease, pinpoint accuracy, and unmatched power directly to your VSCode workflow.  
-  </p>
-  <br>
-  <h1>Launching Soon!</h2>
-  <p>
-  SpecLynx OpenAPI Toolkit will be available during August 2025! Join our <strong><a href="https://speclynx.com?ref=github-waitlist">waitlist</a></strong> to get early access to SpecLynx in August 2025.
   </p>
 </div>  
 
@@ -23,10 +20,11 @@ Get full YAML/JSON autocompletion, inline documentation hints, validation, linti
 
 ### One-Click Tooling
 
-- Quick Starts & Conversions
-- Reformat & Reorder
+- Powered by a powerful [Language Server](https://microsoft.github.io/language-server-protocol/)
+- JSON Schema Validation
 - Semantic Validation & Linting
-- Breaking change detection
+- Spectral Validation & Linting
+- OpenAPI Description dereferencing
 - Workspace-Wide Operations
 
 All these commands — and more — are just a keystroke away in VS Code, so you can focus on designing great APIs instead of wrestling with tooling.
@@ -57,9 +55,9 @@ We are actively expanding the feature set and fixing bugs; this documentation wi
 <img width="792" height="785" alt="image" src="https://github.com/user-attachments/assets/3d2f492d-181c-4952-9784-137411d76590" />
 <img width="948" height="1173" alt="image" src="https://github.com/user-attachments/assets/6a97d11c-47da-4c28-aeca-60305bdbe95d" />
 
+<br><br>
+
 **Web support** — OpenAPI Toolkit is designed to run both on Desktop and in Web environments such as [vscode.dev](https://vscode.dev/), [github.dev](https://github.dev/), and [GitHub Codespaces](https://github.com/features/codespaces). It is one of the few extensions that deliver advanced OpenAPI editing and validation/linting in the web environment.&#x20;
-
-
 
 #### In-context OpenAPI Documentation (hover)
 
@@ -248,9 +246,13 @@ A separate section provides the complete rule schema and examples. *(If you don�
 * swagger
 * tag
 * xml
-  *(These are the current high-level element types recognized by the semantic engine.)*&#x20;
+
+*(These are the current high-level element types recognized by the semantic engine.)*&#x20;
+
+---
 
 ### Preview
+
 
 The Preview panel (powered by Swagger UI) renders the current OpenAPI document and lets you interact with it:
 
