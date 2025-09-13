@@ -47,14 +47,22 @@ We are actively expanding the feature set and fixing bugs; this documentation wi
 
 #### Foreword
 
-**JSON and YAML** — OpenAPI Toolkit provides the same level of support for OpenAPI specs written in JSON or YAML. It also aims to provide editor capabilities even for not-well-formed documents (for example, offering completion and syntax highlighting where possible).
+**JSON and YAML** — OpenAPI Toolkit provides the same level of support for OpenAPI specs written in JSON or YAML format. It also aims to provide editor capabilities even for not-well-formed documents (for example, offering completion and syntax highlighting where possible).
 
-**Swagger/OpenAPI 2.0, OpenAPI 3.0, and 3.1** — OpenAPI Toolkit supports all of these versions with a consistent feature set.
+OpenAPI Toolkit supports following OpenAPI versions with a consistent feature set:
 
-![OpenAPI 3.0 support](https://github.com/user-attachments/assets/3d2f492d-181c-4952-9784-137411d76590)
-![OpenAPI 3.1 support](https://github.com/user-attachments/assets/6a97d11c-47da-4c28-aeca-60305bdbe95d)
+- [OpenAPI 2.0 (Swagger)](https://spec.openapis.org/oas/v2.0.html)
+- [OpenAPI 3.0.x](https://spec.openapis.org/oas/v3.0.4.html)
+- [OpenAPI 3.1.x](https://spec.openapis.org/oas/v3.1.1.html)
 
-<br><br>
+###### OpenAPI 2.0 (Swagger)
+![OpenAPI (Swagger) 2.0 support](https://github.com/user-attachments/assets/c1d7d002-97e8-48cc-a64d-30e4c8987655)
+
+###### OpenAPI 3.0.x
+![OpenAPI 3.0 support](https://github.com/user-attachments/assets/cfcc92af-648b-41d4-bddf-e74fdd493645)
+
+###### OpenAPI 3.1.x
+![OpenAPI 3.1 support](https://github.com/user-attachments/assets/0e0e7017-e4f9-40e7-b7ad-303b8934d582)
 
 **Web support** — OpenAPI Toolkit is designed to run both on Desktop and in Web environments such as [vscode.dev](https://vscode.dev/), [github.dev](https://github.dev/), and [GitHub Codespaces](https://github.com/features/codespaces). It is one of the few extensions that deliver advanced OpenAPI editing and validation/linting in the web environment.&#x20;
 
@@ -162,10 +170,10 @@ To enable Spectral-based checks:
 
 Refer to the [Spectral documentation](https://docs.stoplight.io/docs/spectral/) for ruleset format details.&#x20;
 
-**Create a Spectral ruleset**
+###### Create a Spectral ruleset
 ![Create a Spectral ruleset](https://github.com/user-attachments/assets/1cb7691d-7fba-4b82-96b8-3a0344aa2ba4)
 
-**Use a Spectral ruleset**
+###### Use a Spectral ruleset
 ![Use a Spectral ruleset](https://github.com/user-attachments/assets/2bfd9175-a42b-43e2-96ad-1217b60bebcd)
 
 ##### Semantic validation
@@ -222,6 +230,9 @@ These are the current high-level element types recognized by the semantic engine
 ### Preview
 
 The Preview panel (powered by [SwaggerUI](https://github.com/swagger-api/swagger-ui)) renders the current OpenAPI document and lets you interact with it.
+Preview panel can be opened by opening the Command Palette (CTRL+Shift+P) and running the `OpenAPI Toolkit: Show API Document preview` command.
+
+![SpecLynx OpenAPI Toolkit Preview](https://github.com/user-attachments/assets/67c4e9a9-9084-41ab-bbbe-a01bb50d3457)
 
 
 Preview interactions include:
