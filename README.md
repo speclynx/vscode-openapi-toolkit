@@ -51,9 +51,8 @@ We are actively expanding the feature set and fixing bugs; this documentation wi
 
 **Swagger/OpenAPI 2.0, OpenAPI 3.0, and 3.1** — OpenAPI Toolkit supports all of these versions with a consistent feature set.
 
-
-<img alt="image" src="https://github.com/user-attachments/assets/3d2f492d-181c-4952-9784-137411d76590" />
-<img alt="image" src="https://github.com/user-attachments/assets/6a97d11c-47da-4c28-aeca-60305bdbe95d" />
+![OpenAPI 3.0 support](https://github.com/user-attachments/assets/3d2f492d-181c-4952-9784-137411d76590)
+![OpenAPI 3.1 support](https://github.com/user-attachments/assets/6a97d11c-47da-4c28-aeca-60305bdbe95d)
 
 <br><br>
 
@@ -63,8 +62,7 @@ We are actively expanding the feature set and fixing bugs; this documentation wi
 
 When you hover over a keyword (node key) in the document, the extension shows full, context-aware documentation in a hover panel that corresponds to the selected construct and matches the official specification.
 
-<img alt="image" src="https://github.com/user-attachments/assets/7aaf568d-9a2f-4d4f-bb63-9d38db654579" />
-
+![In-context OpenAPI Documentation ](https://github.com/user-attachments/assets/7aaf568d-9a2f-4d4f-bb63-9d38db654579)
 
 The same documentation is also shown in the details pane of completion items. See the “Completion / Suggestions” section below.&#x20;
 
@@ -72,26 +70,24 @@ The same documentation is also shown in the details pane of completion items. Se
 
 OpenAPI Toolkit provides an enriched completion experience. Under the hood, completion is driven by a semantic understanding of the node where completion is triggered, making suggestions far more precise and useful than standard JSON-Schema-based completion.&#x20;
 
-##### Completion docs
+##### Completion documentation
 
 Each completion item includes full documentation (the same content shown in hover).
 **Tip:** If the documentation panel doesn’t appear to the right of the completion label, click the `>` icon that appears when you hover the completion entry.&#x20;
 
-<img alt="image" src="https://github.com/user-attachments/assets/1d90a38b-427a-4b23-a8f8-aeaa1aa2d448" />
+![Completion documentation](https://github.com/user-attachments/assets/1d90a38b-427a-4b23-a8f8-aeaa1aa2d448)
 
 ##### References completion
 
 When completion is triggered within the value of a `$ref` field, the editor offers suggestions of compatible targets found in the document (this will be expanded to include documents across the workspace). It also displays the referenced content in the completion box, providing an in-context view of potential references without losing focus&#x20;
 
-<img alt="image" src="https://github.com/user-attachments/assets/d293593c-332a-4183-abca-5cbf944176cb" />
-
+![References completion](https://github.com/user-attachments/assets/d293593c-332a-4183-abca-5cbf944176cb)
 
 ##### Context-aware completion (e.g., `type: integer` → `format`)
 
 Suggestions adapt to related fields. For example, if a schema sets `type: integer`, the `format` suggestions include only compatible values.&#x20;
 
-<img alt="image" src="https://github.com/user-attachments/assets/6ef34a33-f7b4-4341-9edb-e8641e626914" />
-
+![Context-aware completion](https://github.com/user-attachments/assets/6ef34a33-f7b4-4341-9edb-e8641e626914)
 
 #### References
 
@@ -99,41 +95,38 @@ Suggestions adapt to related fields. For example, if a schema sets `type: intege
 
 Hovering over the value of a `$ref` field displays the referenced content in the hover box, providing an in-context view of references without losing focus.&#x20;
 
-<img alt="image" src="https://github.com/user-attachments/assets/4882f6e3-7b13-4cd7-84ab-8ce2e3a4081c" />
-
+![Preview reference target](https://github.com/user-attachments/assets/4882f6e3-7b13-4cd7-84ab-8ce2e3a4081c)
 
 
 ##### Go to definition (F3)
 
 Right-click the value of a `$ref` field and choose **Go to Definition** (or press **F3**) to jump to the reference target—either within the current file or in another file in the workspace.&#x20;
 
-<img alt="image" src="https://github.com/user-attachments/assets/a5c1610a-1c06-4c8d-8316-46f953755cd8" />
+![Go to definition](https://github.com/user-attachments/assets/a5c1610a-1c06-4c8d-8316-46f953755cd8)
 
 ##### Go to references
 
 Right-click a key (for example, under `components.schemas`) and choose **Go to References** to open a panel listing available references to jump to.&#x20;
 
-<img alt="image" src="https://github.com/user-attachments/assets/2cb17ad2-cd43-4945-94a7-746c6397a82a" />
-
+![Go to references](https://github.com/user-attachments/assets/2cb17ad2-cd43-4945-94a7-746c6397a82a)
 
 ##### Find all references
 
 Right-click a key (for example, of a schema) and choose **Find All References** to open the References panel listing every usage of the selected target.&#x20;
 
-<img alt="image" src="https://github.com/user-attachments/assets/9b00b3b1-03f3-4252-b7b9-4a853f00783d" />
+![Find all references](https://github.com/user-attachments/assets/9b00b3b1-03f3-4252-b7b9-4a853f00783d)
 
 ##### Dereference command
 
 Right-click inside an OpenAPI document or right-click the file in the Explorer, then choose **OpenAPI Toolkit → Dereference API Document** to save a dereferenced copy locally. The default output name is `{filename}-dereferenced.{extension}`.&#x20;
 
-<img alt="image" src="https://github.com/user-attachments/assets/e7bc9c2b-95be-4508-8212-1f2dd99334c3" />
-
+![Dereference command](https://github.com/user-attachments/assets/e7bc9c2b-95be-4508-8212-1f2dd99334c3)
 
 #### Syntax Highlighting
 
 OpenAPI Toolkit provides **semantic** syntax highlighting, going beyond basic keyword coloring. Specific OpenAPI elements—such as operations, schemas, and reference objects—are highlighted with distinct colors and font styles. This helps you quickly recognize and distinguish different parts of an API definition, improving readability and navigation in complex specifications.&#x20;
 
-<img alt="image" src="https://github.com/user-attachments/assets/b67c64b5-771d-4eb1-81d3-359872e7607b" />
+![Semantic Syntax Highlighting](https://github.com/user-attachments/assets/b67c64b5-771d-4eb1-81d3-359872e7607b)
 
 #### Validation and Linting
 
@@ -152,7 +145,7 @@ OpenAPI Toolkit supports three modes, which you can combine:
 2. **Spectral validation and linting**
 3. **Semantic validation and linting**&#x20;
 
-<img alt="image" src="https://github.com/user-attachments/assets/36d55b1d-6cfa-41db-8656-1242e3e946c0" />
+![Validation/Linting modes](https://github.com/user-attachments/assets/36d55b1d-6cfa-41db-8656-1242e3e946c0)
 
 ##### Default configuration
 
@@ -169,15 +162,17 @@ To enable Spectral-based checks:
 
 Refer to the [Spectral documentation](https://docs.stoplight.io/docs/spectral/) for ruleset format details.&#x20;
 
-<img alt="image" src="https://github.com/user-attachments/assets/1cb7691d-7fba-4b82-96b8-3a0344aa2ba4" />
+**Create a Spectral ruleset**
+![Create a Spectral ruleset](https://github.com/user-attachments/assets/1cb7691d-7fba-4b82-96b8-3a0344aa2ba4)
 
-<img alt="image" src="https://github.com/user-attachments/assets/2bfd9175-a42b-43e2-96ad-1217b60bebcd" />
+**Use a Spectral ruleset**
+![Use a Spectral ruleset](https://github.com/user-attachments/assets/2bfd9175-a42b-43e2-96ad-1217b60bebcd)
 
 ##### Semantic validation
 
 Enable **Apply Semantic Validation** in the extension settings. No rules file is required to run the built-in semantic validation checks.&#x20;
 
-<img alt="image" src="https://github.com/user-attachments/assets/6245a7f4-71d2-46f9-a271-b031728ace4c" />
+![Semantic Validation](https://github.com/user-attachments/assets/6245a7f4-71d2-46f9-a271-b031728ace4c)
 
 ##### Semantic linting
 
@@ -198,63 +193,38 @@ Semantic lint rules are defined in JSON or YAML. A ruleset typically includes:
 * **Condition(s)** to evaluate (e.g., required fields, naming patterns, min/max constraints)
 * **Optional fixes** or suggestions (when applicable)
 
-<img alt="image" src="https://github.com/user-attachments/assets/a2f3e0d8-8178-43a6-b26c-f1678b3a7622" />
+![Semantic linting rules](https://github.com/user-attachments/assets/a2f3e0d8-8178-43a6-b26c-f1678b3a7622)
 
 A separate section provides the complete rule schema and examples. *(If you don’t see it yet, it will be added as the rules stabilize.)*&#x20;
 
 ##### Supported major element “types” for semantic checks
 
-* callback
-* components
-* contact
-* content
-* definitions
-* discriminator
-* encoding
-* example
-* external-documentation
-* header
-* headers
-* info
-* items
-* license
-* link
-* media-type
-* oauth-flow
-* oauth-flows
-* openapi
-* openapi3\_0
-* openapi3\_1
-* operation
-* parameter
-* parameters-definitions
-* path-item
-* paths
-* path-template
-* reference
-* request-body
-* response
-* responses
-* responses-definitions
-* schema
-* scopes
-* security-definitions
-* security-requirement
-* security-scheme
-* server
-* server-variable
-* swagger
-* tag
-* xml
+These are the current high-level element types recognized by the semantic engine.
 
-*(These are the current high-level element types recognized by the semantic engine.)*&#x20;
+| &nbsp;            | &nbsp;                  | &nbsp;                   |
+|-------------------|-------------------------|--------------------------|
+| `callback`        | `components`            | `contact`                |
+| `content`         | `definitions`           | `discriminator`          |
+| `encoding`        | `example`               | `external-documentation` |
+| `header`          | `headers`               | `info`                   |
+| `items`           | `license`               | `link`                   |
+| `media-type`      | `oauth-flow`            | `oauth-flows`            |
+| `openapi`         | `openapi3_0`            | `openapi3_1`             |
+| `operation`       | `parameter`             | `parameters-definitions` |
+| `path-item`       | `paths`                 | `path-template`          |
+| `reference`       | `request-body`          | `response`               |
+| `responses`       | `responses-definitions` | `schema`                 |
+| `scopes`          | `security-definitions`  | `security-requirement`   |
+| `security-scheme` | `server`                | `server-variable`        |
+| `swagger`         | `tag`                   | `xml`                    |
 
----
 
 ### Preview
 
+The Preview panel (powered by [SwaggerUI](https://github.com/swagger-api/swagger-ui)) renders the current OpenAPI document and lets you interact with it.
 
-The Preview panel (powered by Swagger UI) renders the current OpenAPI document and lets you interact with it:
+
+Preview interactions include:
 
 * **Live rendering** — Quickly verify how changes look without leaving the editor
 * **Server selection & auth** — Choose servers and authorize requests where applicable
