@@ -232,7 +232,7 @@ These are the current high-level element types recognized by the semantic engine
 ### Formatting
 
 SpecLynx OpenAPI Toolkit is capable of formatting your OpenAPI Documents, whether they are written
-in JSON or YAML. Formatting preferrences, like `tabSize` or whether to use tabs or spaces (`insertSpaces`)
+in JSON or YAML. Formatting preferences, like `tabSize` or whether to use tabs or spaces (`insertSpaces`)
 are read directly from your VSCode settings.
 
 ![JSON/YAML Formatting](https://github.com/user-attachments/assets/06f21516-7380-4e47-ac77-31a515cd1885)
