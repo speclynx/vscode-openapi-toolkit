@@ -25,6 +25,7 @@ Get full YAML/JSON autocompletion, inline documentation hints, validation, linti
 - Semantic Validation & Linting
 - Spectral Validation & Linting
 - OpenAPI Description dereferencing
+- JSON <-> YAML Conversion
 - Workspace-Wide Operations
 
 All these commands — and more — are just a keystroke away in VS Code, so you can focus on designing great APIs instead of wrestling with tooling.
@@ -237,6 +238,12 @@ are read directly from your VSCode settings.
 
 ![JSON/YAML Formatting](https://github.com/user-attachments/assets/06f21516-7380-4e47-ac77-31a515cd1885)
 
+
+### JSON <-> YAML Conversion
+
+Right-click inside an OpenAPI document or right-click the file in the Explorer, then choose **OpenAPI Toolkit → Convert YAML to JSON / Convert JSON to YAML** to convert the document from one format to the other and save locally. The default output name is `{filename}.{target-extension}`
+
+![JSON <-> YAML Conversion](https://github.com/user-attachments/assets/4833e85b-b0dd-4831-a38b-a3f695d45553)
 
 ### Preview
 
