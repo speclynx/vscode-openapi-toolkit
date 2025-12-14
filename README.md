@@ -240,16 +240,27 @@ are read directly from your VSCode settings.
 
 ### Preview
 
-The Preview panel (powered by [SwaggerUI](https://github.com/swagger-api/swagger-ui)) renders the current OpenAPI document and lets you interact with it.
+The Preview panel renders the current OpenAPI document and lets you interact with it.
 Preview panel can be opened by opening the Command Palette (CTRL+Shift+P) and running the `OpenAPI Toolkit: Show API Document preview` command.
 
-![SpecLynx OpenAPI Toolkit Preview](https://github.com/user-attachments/assets/67c4e9a9-9084-41ab-bbbe-a01bb50d3457)
+Supported renderers:
+
+- [Scalar API Reference](https://github.com/scalar/scalar/tree/main/packages/api-reference#readme) (default)
+- [SwaggerUI](https://github.com/swagger-api/swagger-ui)
+
+To switch between renderers, change the `speclynx.openapi.preview.renderer` setting in your VSCode configuration.
+
+###### Scalar API Reference
+![Scalar API Reference Preview](https://github.com/user-attachments/assets/176f07bf-b54a-42d7-91c3-d3d745017e5e)
+
+###### SwaggerUI
+![SwaggerUI Preview](https://github.com/user-attachments/assets/67c4e9a9-9084-41ab-bbbe-a01bb50d3457)
 
 
 Preview interactions include:
 
 * **Live rendering** — Quickly verify how changes look without leaving the editor
 * **Server selection & auth** — Choose servers and authorize requests where applicable
-* **Try it out** — Execute operations directly from the preview to validate requests/responses during development
+* **Try it out / Test request** — Execute operations directly from the preview to validate requests/responses during development
 
 This helps you validate the specification from both a structural and a consumer point of view.&#x20;
