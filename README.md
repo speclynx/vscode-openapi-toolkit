@@ -243,12 +243,11 @@ are read directly from your VSCode settings.
 The Preview panel renders the current OpenAPI document and lets you interact with it.
 Preview panel can be opened by opening the Command Palette (CTRL+Shift+P) and running the `OpenAPI Toolkit: Show API Document preview` command.
 
-Supported renderers:
+Multiple renderers are supported and you switch between renderers by changing the `speclynx.openapi.preview.renderer` setting in your VSCode configuration:
 
-- [Scalar API Reference](https://github.com/scalar/scalar/tree/main/packages/api-reference#readme) (default)
-- [SwaggerUI](https://github.com/swagger-api/swagger-ui)
+- `scalar` \[ [Scalar API Reference](https://github.com/scalar/scalar/tree/main/packages/api-reference#readme) \] (default)
+- `swagger-ui` \[ [SwaggerUI](https://github.com/swagger-api/swagger-ui) \]
 
-To switch between renderers, change the `speclynx.openapi.preview.renderer` setting in your VSCode configuration.
 
 ###### Scalar API Reference
 ![Scalar API Reference Preview](https://github.com/user-attachments/assets/176f07bf-b54a-42d7-91c3-d3d745017e5e)
