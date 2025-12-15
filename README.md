@@ -250,8 +250,9 @@ The extension supports multiple OpenAPI preview renderers. You can switch betwee
 | **scalar**  | [Scalar API Reference](https://github.com/scalar/scalar/tree/main/packages/api-reference#readme) | ✅ |
 | **swagger-ui** | [Swagger UI](https://github.com/swagger-api/swagger-ui) |  |
 
-> In VS Code, go to **File → Preferences → Settings** and search for **“speclynx renderer”**.
-
+> In VS Code, go to **File → Preferences → Settings**, then search for **@ext:SpecLynx.vscode-openapi-toolkit**.
+>  
+> This will display all settings provided by the extension.
 
 ###### Scalar API Reference
 ![Scalar API Reference Preview](https://github.com/user-attachments/assets/176f07bf-b54a-42d7-91c3-d3d745017e5e)
