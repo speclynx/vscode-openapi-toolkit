@@ -243,7 +243,7 @@ are read directly from your VSCode settings.
 
 Right-click inside an OpenAPI document or right-click the file in the Explorer, then choose **OpenAPI Toolkit → Convert to YAML / Convert to JSON** to convert the document from one format to the other and save locally. The default output name is `{filename}.{target-extension}`
 
-![JSON <-> YAML Conversion](https://github.com/user-attachments/assets/4833e85b-b0dd-4831-a38b-a3f695d45553)
+![JSON <-> YAML Conversion](https://github.com/user-attachments/assets/50a11c4f-b0c1-4861-8e1f-589389524653)
 
 ### Preview
 
