@@ -39,7 +39,7 @@ SpecLynx OpenAPI Toolkit adds semantic editing, validation/linting, preview, and
 
 ## Preview
 
-[![OpenAPI preview inside VS Code](https://speclynx.com/assets/images/openapi-toolkit/main-screenshot.png)](https://speclynx.com/openapi-toolkit/)
+[![OpenAPI preview inside VS Code](https://raw.githubusercontent.com/speclynx/vscode-openapi-toolkit/main/assets/openapi-toolkit.png)](https://speclynx.com/openapi-toolkit/)
 
 ---
 
