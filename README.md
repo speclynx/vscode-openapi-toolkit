@@ -1,6 +1,6 @@
 <div>
   <a href="https://speclynx.com">
-    <img width="739" height="103" alt="SpecLynx OpenAPI Toolkit" src="https://github.com/user-attachments/assets/87c88ea9-5746-497a-8c33-43fa55b72b0b" />
+    <img width="739" height="103" alt="SpecLynx OpenAPI Toolkit" src="https://raw.githubusercontent.com/speclynx/vscode-openapi-toolkit/main/assets/openapi-toolkit.png" />
   </a>
   <br><br>
   <p>
@@ -39,7 +39,7 @@ SpecLynx OpenAPI Toolkit adds semantic editing, validation/linting, preview, and
 
 ## Preview
 
-[![OpenAPI preview inside VS Code](https://raw.githubusercontent.com/speclynx/vscode-openapi-toolkit/main/assets/openapi-toolkit.png)](https://speclynx.com/openapi-toolkit/)
+[![OpenAPI preview inside VS Code](https://speclynx.com/assets/images/openapi-toolkit/main-screenshot.png)](https://speclynx.com/openapi-toolkit/)
 
 ---
 
