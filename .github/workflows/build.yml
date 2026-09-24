@@ -1,0 +1,112 @@
+# Builds and tests the extension and the language server, and exercises the
+# packaging paths a release depends on, so a release-day surprise becomes a
+# pull-request-day one.
+
+name: Build
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  publication-guardrails:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - run: node scripts/check-private-paths.mjs
+      - run: node scripts/check-retired-identifiers.mjs
+      - run: node scripts/check-plugin-catalog.mjs --fetch
+      - run: node --test scripts/check-private-paths.test.mjs
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      # The e2e suite downloads a VS Code build; caching keeps it off the
+      # critical path of every run.
+      - uses: actions/cache@v6
+        with:
+          path: .vscode-test
+          key: vscode-test-${{ runner.os }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The extension, the server and the Claude Code plugin share one version.
+      # Catching drift here stops a released plugin pinning a server version that
+      # was never published.
+      - name: Check version sync
+        run: node scripts/check-version-sync.mjs
+
+      # A lockfile that disagrees with the manifests fails `npm ci` at tag time,
+      # when the tag is already public and immutable.
+      - name: Check the lockfile is up to date
+        run: |
+          npm install --package-lock-only --ignore-scripts
+          git diff --exit-code package-lock.json
+
+      - name: Lint and type check
+        run: npm run lint && npm run typescript:check-types
+
+      - name: Tooling contracts
+        run: npm run test:tooling
+
+      - name: Install browser test runtime
+        run: node node_modules/playwright/cli.js install --with-deps chromium
+
+      - name: Build
+        run: npm run build:prod
+
+      - name: Check redistribution notices
+        run: node scripts/check-attribution.mjs
+
+      - name: Browser language and preview checks
+        run: npm run test:browser && npm run test:previews
+
+      - name: Test
+        run: xvfb-run -a npm run test
+
+      # Proves the npm package still resolves, builds through `prepack`, and
+      # ships what `files` claims. Runs after the build, because `prepack` writes
+      # into the same server/dist the extension bundles live in.
+      - name: Dry-run the npm publish
+        run: npm publish --dry-run --workspace=server
+
+      # Exercises vsce's `files` include-pattern gate and its secretlint scan,
+      # neither of which anything else touches before release day.
+      - name: Package the extension
+        run: npm run vscode:package
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      # Bundled dependencies are also declared as devDependencies: do not omit them.
+      - run: npm audit --audit-level=low

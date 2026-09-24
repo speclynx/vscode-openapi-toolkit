@@ -1,0 +1,14 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "speclynx-lsp",
+  "version": "1.5.3",
+  "description": "API language server (LSP) providing validation, linting, completion, hover and navigation for OpenAPI/Swagger 2.0, OpenAPI 3.0 and 3.1 documents in JSON and YAML.",
+  "author": {
+    "name": "SpecLynx",
+    "email": "info@speclynx.com"
+  },
+  "homepage": "https://speclynx.com",
+  "repository": "https://github.com/speclynx/vscode-openapi-toolkit",
+  "license": "Apache-2.0",
+  "keywords": ["openapi", "swagger", "lsp", "apidom", "validation", "linting"]
+}

@@ -1,0 +1,122 @@
+{
+  "explorer.confirmDelete": false,
+  "terminal.integrated.shell.linux": "/bin/bash",
+  "files.autoSave": "off",
+  "eslint.format.enable": true,
+  "eslint.codeAction.showDocumentation": {
+
+    "enable": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.semanticTokenColorCustomizations": {
+    "[Default Dark+]": {
+      "enabled": true,
+      "rules": {
+        "info": { "foreground": "#e44a4a" },
+        "asyncApiVersion": { "foreground": "#080cf5" },
+        "pathItem": { "foreground": "#679b08", "bold":true },
+        "operation.httpMethod-GET": { "foreground": "#74f09d" },
+        "operation.httpMethod-POST": { "foreground": "#65ace6" },
+        "operation.default": { "foreground": "#65ace6" },
+        "parameter": { "foreground": "#65ace6" },
+        "specVersion": { "foreground": "#080cf5" },
+        "version": { "foreground": "#080cf5" },
+        "components": { "foreground": "#b1b1b8" },
+        "parameters": { "foreground": "#b1b1b8" },
+        "components-parameters": { "foreground": "#b1b1b8" },
+        "components-schemas": { "foreground": "#b1b1b8" },
+        "components-messages": { "foreground": "#b1b1b8" },
+        "schema": { "foreground": "#c7da23" },
+        "servers": { "foreground": "#b1b1b8" },
+        "channels": { "foreground": "#b1b1b8" },
+        "responses": { "foreground": "#b1b1b8" },
+        "response": { "foreground": "#71db47" },
+        "paths": { "foreground": "#b1b1b8" },
+        "reference-field": { "foreground": "#dd2013", "italic": true },
+        "reference-element": { "foreground": "#dd2013", "bold": true },
+        "json-reference": { "foreground": "#dd2013", "bold": true },
+        "Asyncapi-reference": { "foreground": "#dd2013", "bold": true },
+        "openapi-reference": { "foreground": "#dd2013", "bold": true },
+        "reference": { "foreground": "#dd2013", "bold": true },
+        "*.declaration": { "bold": true },
+        "value.string": { "foreground": "#9beb82" }
+      }
+    },
+    "[Default Light+]": {
+      "enabled": true,
+      "rules": {
+        "info": { "foreground": "#e44a4a" },
+        "asyncApiVersion": { "foreground": "#080cf5" },
+        "pathItem": { "foreground": "#679b08", "bold":true },
+        "operation.httpMethod-GET": { "foreground": "#74f09d" },
+        "operation.httpMethod-POST": { "foreground": "#65ace6" },
+        "operation.default": { "foreground": "#65ace6" },
+        "parameter": { "foreground": "#65ace6" },
+        "specVersion": { "foreground": "#080cf5" },
+        "version": { "foreground": "#080cf5" },
+        "components": { "foreground": "#b1b1b8" },
+        "parameters": { "foreground": "#b1b1b8" },
+        "components-parameters": { "foreground": "#b1b1b8" },
+        "components-schemas": { "foreground": "#b1b1b8" },
+        "components-messages": { "foreground": "#b1b1b8" },
+        "schema": { "foreground": "#c7da23" },
+        "servers": { "foreground": "#b1b1b8" },
+        "channels": { "foreground": "#b1b1b8" },
+        "responses": { "foreground": "#b1b1b8" },
+        "response": { "foreground": "#71db47" },
+        "paths": { "foreground": "#b1b1b8" },
+        "reference-field": { "foreground": "#dd2013", "italic": true },
+        "reference-element": { "foreground": "#dd2013", "bold": true },
+        "json-reference": { "foreground": "#dd2013", "bold": true },
+        "Asyncapi-reference": { "foreground": "#dd2013", "bold": true },
+        "openapi-reference": { "foreground": "#dd2013", "bold": true },
+        "reference": { "foreground": "#dd2013", "bold": true },
+        "*.declaration": { "bold": true },
+        "value.string": { "foreground": "#9beb82" }
+      }
+    },
+    "[Default High Contrast Light]": {
+      "enabled": true,
+      "rules": {
+        "info": { "foreground": "#e44a4a" },
+        "asyncApiVersion": { "foreground": "#080cf5" },
+        "pathItem": { "foreground": "#679b08", "bold":true },
+        "operation.httpMethod-GET": { "foreground": "#74f09d" },
+        "operation.httpMethod-POST": { "foreground": "#65ace6" },
+        "operation.default": { "foreground": "#65ace6" },
+        "parameter": { "foreground": "#65ace6" },
+        "specVersion": { "foreground": "#080cf5" },
+        "version": { "foreground": "#080cf5" },
+        "components": { "foreground": "#b1b1b8" },
+        "parameters": { "foreground": "#b1b1b8" },
+        "components-parameters": { "foreground": "#b1b1b8" },
+        "components-schemas": { "foreground": "#b1b1b8" },
+        "components-messages": { "foreground": "#b1b1b8" },
+        "schema": { "foreground": "#c7da23" },
+        "servers": { "foreground": "#b1b1b8" },
+        "channels": { "foreground": "#b1b1b8" },
+        "responses": { "foreground": "#b1b1b8" },
+        "response": { "foreground": "#71db47" },
+        "paths": { "foreground": "#b1b1b8" },
+        "reference-field": { "foreground": "#dd2013", "italic": true },
+        "reference-element": { "foreground": "#dd2013", "bold": true },
+        "json-reference": { "foreground": "#dd2013", "bold": true },
+        "Asyncapi-reference": { "foreground": "#dd2013", "bold": true },
+        "openapi-reference": { "foreground": "#dd2013", "bold": true },
+        "reference": { "foreground": "#dd2013", "bold": true },
+        "*.declaration": { "bold": true },
+        "value.string": { "foreground": "#9beb82" }
+      }
+    }
+  },
+  "eslint.alwaysShowStatus": true,
+  "security.workspace.trust.untrustedFiles": "open",
+  "workbench.startupEditor": "none",
+  "debug.onTaskErrors": "debugAnyway",
+  "workbench.colorCustomizations": {
+
+  },
+  "workbench.colorTheme": "Default Light+"
+}

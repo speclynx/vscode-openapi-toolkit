@@ -1,0 +1,6 @@
+{
+  "type": "string",
+  "description": "exernal schema",
+  "maxLength": 12
+}
+

@@ -1,0 +1,25 @@
+{
+  "speclynx-lsp": {
+    "command": "node",
+    "args": ["${CLAUDE_PLUGIN_ROOT}/node_modules/@speclynx/api-language-server/dist/node/cli.js"],
+    "workspaceFolder": "${CLAUDE_PROJECT_DIR}",
+    "extensionToLanguage": {
+      ".yaml": "yaml",
+      ".yml": "yaml",
+      ".json": "json"
+    },
+    "initializationOptions": {
+      "extensionConfig": {
+        "validation": {
+          "applyJsonSchemaValidation": true,
+          "betterErrorsForJsonSchema": true,
+          "applySemanticValidation": true,
+          "semanticLinting": true,
+          "referenceValidation": true,
+          "applySpectralValidation": false
+        }
+      }
+    },
+    "startupTimeout": 60000
+  }
+}

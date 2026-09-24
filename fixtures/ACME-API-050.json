@@ -1,0 +1,100 @@
+[
+  {
+    "name": "SB-API-050-property-names",
+    "description": "property names must be snake_case and alphanumeric",
+    "recommended": true,
+    "code": 20001,
+    "source": "acme-lint",
+    "severity": 1,
+    "message": "properties MUST follow snake_case",
+    "given": [
+      "schema"
+    ],
+    "conditions": [
+      {
+        "targets": [
+          {
+            "path": "parent"
+          }
+        ],
+        "function": "apilintElementOrClass",
+        "params": [
+          [
+            "json-schema-properties"
+          ]
+        ]
+      }
+    ],
+    "linterFunction": "apilintKeyCasing",
+    "linterParams": [
+      "snake"
+    ],
+    "marker": "key",
+    "data": {}
+  },
+  {
+    "name": "SB-API-050-query-parameter-names",
+    "description": "query parameter names must be snake_case",
+    "recommended": true,
+    "code": 20002,
+    "source": "acme-lint",
+    "severity": 1,
+    "message": "parameter names MUST follow snake_case",
+    "given": [
+      "parameter"
+    ],
+    "target": "name",
+    "conditions": [
+      {
+        "targets": [
+          {
+            "path": "in"
+          }
+        ],
+        "function": "apilintValueOrArray",
+        "params": [
+          [
+            "query"
+          ]
+        ]
+      }
+    ],
+    "linterFunction": "apilintValueCasing",
+    "linterParams": [
+      "snake"
+    ],
+    "marker": "key",
+    "markerTarget": "name",
+    "data": {}
+  },
+  {
+    "name": "TEST-WITH-CUSTOM-FUNCTION",
+    "description": "test custom native function",
+    "recommended": true,
+    "code": 20004,
+    "source": "acme-lint",
+    "severity": 2,
+    "message": "missing Acme Extension",
+    "given": [
+      "schema"
+    ],
+    "linterFunction": "requiredAcmeExtension",
+    "marker": "key",
+    "data": {}
+  },
+  {
+    "name": "TEST-WITH-EVAL-FUNCTION",
+    "description": "test custom eval function",
+    "recommended": true,
+    "code": 20004,
+    "source": "acme-lint",
+    "severity": 2,
+    "message": "missing x-acme-team Acme Team extension",
+    "given": [
+      "contact"
+    ],
+    "linterFunction": "requiredAcmeTeam",
+    "marker": "key",
+    "data": {}
+  }
+]

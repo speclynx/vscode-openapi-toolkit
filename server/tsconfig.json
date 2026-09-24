@@ -1,0 +1,19 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "WebWorker"],
+    "outDir": "out",
+    "rootDir": "src",
+    "composite": true,                     /* Enable project references. */
+    "resolveJsonModule": true,
+    "declaration": true,                      /* Generates corresponding '.d.ts' file. */
+    "declarationMap": false,
+    "strict": true,                           /* Enable all strict type-checking options. */
+    "allowSyntheticDefaultImports": true,     /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
+    "esModuleInterop": true,                  /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    "skipLibCheck": true,                     /* Skip type checking of declaration files. */
+    "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
+    "types": ["node", "mocha"]
+  },
+  "include": ["src/**/*", "src/**/*.json"]
+}

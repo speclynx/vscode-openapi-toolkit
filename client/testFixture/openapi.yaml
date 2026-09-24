@@ -1,0 +1,36 @@
+openapi: 3.1.0
+info:
+  title: Feature Regression Fixture
+paths:
+  /pets:
+    get:
+      operationId: listPets
+      summary: List pets
+      responses:
+        '200':
+          description: A list of pets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+    post:
+      operationId: addPet
+      summary: Add a pet
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/pet.yaml#/Pet'
+components:
+  schemas:
+    Pet:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        name:
+          type: string

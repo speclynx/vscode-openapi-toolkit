@@ -1,0 +1,38 @@
+{
+  "agent-base": {
+    "version": "6.0.2",
+    "license": "MIT",
+    "file": "agent-base.txt",
+    "source": "This version publishes no licence file \u2014 the project had none at its 6.0.2 tag either. The notice below is the one carried in README.md in the tarball bundled here."
+  },
+  "https-proxy-agent": {
+    "version": "5.0.1",
+    "license": "MIT",
+    "file": "https-proxy-agent.txt",
+    "source": "This version publishes no licence file \u2014 the project had none at its 5.0.1 tag either. The notice below is the one carried in README.md in the tarball bundled here."
+  },
+  "tr46": {
+    "version": "0.0.3",
+    "license": "MIT",
+    "file": "tr46.txt",
+    "source": "This version publishes neither a licence file nor a readme. The notice below is LICENSE.md from the project's repository, https://github.com/Sebmaster/tr46.js."
+  },
+  "@stoplight/spectral-runtime": {
+    "version": "1.1.6",
+    "license": "Apache-2.0",
+    "file": "stoplight-spectral-runtime.txt",
+    "source": "This version publishes no licence file. The notice below is the LICENSE of the repository it is built from, https://github.com/stoplightio/spectral, which is byte-identical to the file its sibling @stoplight/spectral-* packages ship."
+  },
+  "data-uri-to-buffer": {
+    "version": "4.0.1",
+    "license": "MIT",
+    "file": "data-uri-to-buffer.txt",
+    "source": "The full MIT notice in README.md of data-uri-to-buffer@4.0.1, whose npm archive omits a separate license file."
+  },
+  "short-unique-id": {
+    "version": "5.3.2",
+    "license": "Apache-2.0",
+    "file": "short-unique-id.txt",
+    "source": "Copyright and Apache-2.0 grant from README.md in the short-unique-id@5.3.2 npm archive, followed by the full Apache-2.0 text."
+  }
+}

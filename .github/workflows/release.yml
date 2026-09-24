@@ -1,0 +1,280 @@
+name: Release
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
+  workflow_dispatch:
+    inputs:
+      promote_plugin:
+        description: Promote the previously verified plugin payload (run from its release tag)
+        type: boolean
+        default: false
+      runtime_evidence_sha256:
+        description: SHA-256 of the reviewed plugin-runtime-evidence.json release asset
+        type: string
+        required: false
+concurrency:
+  group: release
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  preflight:
+    if: github.repository == 'speclynx/vscode-openapi-toolkit'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - name: Verify the immutable release source
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_REF" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+          node scripts/check-version-sync.mjs --tag
+          node scripts/check-private-paths.mjs
+          node scripts/check-retired-identifiers.mjs
+      - id: version
+        run: node -e 'require("fs").appendFileSync(process.env.GITHUB_OUTPUT, `version=${require("./package.json").version}\n`)'
+
+  artifacts:
+    needs: preflight
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      deliverables_id: ${{ steps.identity.outputs.deliverables_id }}
+      record_id: ${{ steps.identity.outputs.record_id }}
+      origin_run_id: ${{ steps.identity.outputs.origin_run_id }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Find the original record before deciding to build
+        id: retained
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+        run: node scripts/find-release-record.mjs
+      - uses: actions/download-artifact@v8
+        if: steps.retained.outputs.restore == 'true'
+        with:
+          artifact-ids: ${{ steps.retained.outputs.deliverables_id }}
+          run-id: ${{ steps.retained.outputs.origin_run_id }}
+          github-token: ${{ github.token }}
+          path: release-artifacts
+          merge-multiple: true
+      - name: Restore the finalized record and verify original bytes
+        if: steps.retained.outputs.restore == 'true'
+        run: |
+          cp retained-record/release-record.json release-artifacts/release-record.json
+          node scripts/release-artifacts.mjs verify
+      - name: Build and test a first release candidate
+        if: steps.retained.outputs.restore != 'true'
+        env:
+          RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run lint
+          npm run typescript:check-types
+          npm run test:tooling
+          npm audit --audit-level=low
+          node node_modules/playwright/cli.js install --with-deps chromium
+          node scripts/check-plugin-catalog.mjs --fetch
+          npm pkg set "gitHead=$GITHUB_SHA" --workspace=server
+          npm run build:prod
+          node scripts/check-attribution.mjs
+          npm run test:browser
+          npm run test:previews
+          mkdir release-artifacts
+          npm pack --ignore-scripts --workspace=server --pack-destination release-artifacts
+          export SPECLYNX_SERVER_TARBALL="$PWD/release-artifacts/speclynx-api-language-server-${RELEASE_VERSION}.tgz"
+          xvfb-run -a npm test
+          npm run vscode:package
+          cp "bin/vscode-openapi-toolkit-${RELEASE_VERSION}.vsix" release-artifacts/
+          node scripts/release-artifacts.mjs record
+          bash scripts/scan-release-artifacts.sh release-artifacts
+          node scripts/release-artifacts.mjs verify
+      - uses: actions/upload-artifact@v7
+        if: steps.retained.outputs.restore != 'true'
+        id: deliverables
+        with:
+          name: release-deliverables-${{ github.sha }}
+          path: |
+            release-artifacts/*.tgz
+            release-artifacts/*.vsix
+          if-no-files-found: error
+          retention-days: 90
+      - name: Finalize the release record with its immutable deliverables ID
+        if: steps.retained.outputs.restore != 'true'
+        env:
+          DELIVERABLES_ARTIFACT_ID: ${{ steps.deliverables.outputs.artifact-id }}
+        run: node scripts/release-artifacts.mjs finalize
+      - uses: actions/upload-artifact@v7
+        if: steps.retained.outputs.restore != 'true'
+        id: record
+        with:
+          name: release-record-${{ github.sha }}
+          path: release-artifacts/release-record.json
+          if-no-files-found: error
+          retention-days: 90
+      - id: identity
+        env:
+          RESTORED: ${{ steps.retained.outputs.restore }}
+          RETAINED_ID: ${{ steps.retained.outputs.deliverables_id }}
+          RETAINED_RECORD_ID: ${{ steps.retained.outputs.record_id }}
+          RETAINED_RUN_ID: ${{ steps.retained.outputs.origin_run_id }}
+          NEW_ID: ${{ steps.deliverables.outputs.artifact-id }}
+          NEW_RECORD_ID: ${{ steps.record.outputs.artifact-id }}
+        run: |
+          node --input-type=module -e '
+            import fs from "node:fs";
+            const restored = process.env.RESTORED === "true";
+            const values = { deliverables_id: restored ? process.env.RETAINED_ID : process.env.NEW_ID,
+              record_id: restored ? process.env.RETAINED_RECORD_ID : process.env.NEW_RECORD_ID,
+              origin_run_id: restored ? process.env.RETAINED_RUN_ID : process.env.GITHUB_RUN_ID };
+            for (const [key, value] of Object.entries(values)) {
+              if (!/^[1-9][0-9]*$/.test(value)) throw new Error("Missing artifact identity");
+              fs.appendFileSync(process.env.GITHUB_OUTPUT, `${key}=${value}\n`);
+              fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${key}: ${value}\n\n`);
+            }'
+      - name: Evaluate registry identity with the retained archive
+        run: node scripts/release-artifacts.mjs registry
+
+  publish-npm:
+    needs: [preflight, artifacts]
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+      - uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ needs.artifacts.outputs.deliverables_id }},${{ needs.artifacts.outputs.record_id }}
+          run-id: ${{ needs.artifacts.outputs.origin_run_id }}
+          github-token: ${{ github.token }}
+          path: release-artifacts
+          merge-multiple: true
+      # Always reevaluate the registry, even on a failed-job-only retry. No npm ci,
+      # prepack or workspace publish can produce a second identity here.
+      - run: node scripts/release-artifacts.mjs publish
+
+  github-release:
+    needs: [preflight, artifacts, publish-npm]
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ needs.artifacts.outputs.deliverables_id }},${{ needs.artifacts.outputs.record_id }}
+          run-id: ${{ needs.artifacts.outputs.origin_run_id }}
+          github-token: ${{ github.token }}
+          path: release-artifacts
+          merge-multiple: true
+      - run: node scripts/release-artifacts.mjs registry --require-present
+      - name: Publish verified release assets in this repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/publish-github-release.mjs
+
+  prepare-plugin:
+    needs: [preflight, artifacts, github-release]
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      payload_sha: ${{ steps.payload.outputs.payload_sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ needs.artifacts.outputs.deliverables_id }},${{ needs.artifacts.outputs.record_id }}
+          run-id: ${{ needs.artifacts.outputs.origin_run_id }}
+          github-token: ${{ github.token }}
+          path: release-artifacts
+          merge-multiple: true
+      - run: node scripts/release-artifacts.mjs registry --require-present
+      - name: Prepare and scan the immutable plugin payload
+        run: node scripts/release-plugin.mjs prepare
+      - name: Publish only the cleared payload ref
+        id: payload
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+        run: |
+          gh auth setup-git
+          node scripts/release-plugin.mjs push
+      - name: Record the required runtime gate
+        run: |
+          echo 'Plugin payload prepared. Default catalog promotion requires an isolated Claude install, diagnostics and cached-client upgrade test against this exact SHA.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Publish the reviewed public-safe runtime evidence and dispatch this workflow from the same release tag with promote_plugin enabled.' >> "$GITHUB_STEP_SUMMARY"
+
+  promote-plugin:
+    if: github.event_name == 'workflow_dispatch' && inputs.promote_plugin
+    needs: [preflight, artifacts, prepare-plugin]
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ needs.artifacts.outputs.deliverables_id }},${{ needs.artifacts.outputs.record_id }}
+          run-id: ${{ needs.artifacts.outputs.origin_run_id }}
+          github-token: ${{ github.token }}
+          path: release-artifacts
+          merge-multiple: true
+      - name: Verify registry and reviewed runtime evidence before changing the catalog
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+          PAYLOAD_SHA: ${{ needs.prepare-plugin.outputs.payload_sha }}
+          RUNTIME_EVIDENCE_SHA256: ${{ inputs.runtime_evidence_sha256 }}
+        run: |
+          gh auth setup-git
+          node scripts/release-artifacts.mjs registry --require-present
+          node scripts/release-plugin.mjs promote

@@ -1,0 +1,17 @@
+{
+  /* Declarations for the published package. The code itself ships as one
+     bundled file, but the programmatic API is typed, so the .d.ts tree is
+     emitted separately and shipped alongside it. */
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "incremental": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "rootDir": "../src",
+    "outDir": "../dist/types",
+    "types": ["node"]
+  },
+  "include": ["../src/**/*"],
+  "exclude": ["../src/test/**/*"]
+}

@@ -1,0 +1,1726 @@
+{
+  "name": "vscode-openapi-toolkit",
+  "displayName": "OpenAPI Toolkit",
+  "description": "OpenAPI editing, commands, validation, linting & live preview in VSCode",
+  "version": "1.5.3",
+  "private": true,
+  "icon": "./images/icon.png",
+  "homepage": "https://speclynx.com",
+  "publisher": "SpecLynx",
+  "author": "SpecLynx",
+  "license": "Apache-2.0",
+  "contributors": [
+    {
+      "name": "Francesco Tumanischvili",
+      "email": "frantuma@yahoo.com"
+    },
+    {
+      "name": "Vladim\u00edr Gorej",
+      "email": "vladimir.gorej@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/speclynx/vscode-openapi-toolkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/speclynx/vscode-openapi-toolkit/issues"
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Linters",
+    "Visualization"
+  ],
+  "keywords": [
+    "openapi",
+    "swagger",
+    "json",
+    "yaml",
+    "editor",
+    "toolkit",
+    "validate",
+    "lint",
+    "format",
+    "convert",
+    "preview",
+    "api",
+    "api description",
+    "api specification",
+    "oas",
+    "oas2",
+    "oas3"
+  ],
+  "engines": {
+    "vscode": "^1.75.0",
+    "node": ">=16.14.2"
+  },
+  "pricing": "Free",
+  "sponsor": {
+    "url": "https://github.com/speclynx/vscode-openapi-toolkit"
+  },
+  "main": "./client/dist/node/speclynxClientMain.js",
+  "browser": "./client/dist/browser/speclynxClientMain.js",
+  "scripts": {
+    "vscode:package": "mkdir -p bin && vsce package --no-dependencies --out 'bin'",
+    "clean": "npm run clean --workspaces --if-present",
+    "clean:dev": "npm run clean:dev --workspaces --if-present",
+    "clean:prod": "npm run clean:prod --workspaces --if-present",
+    "build:dev": "npm --workspace=client run build:dev && npm --workspace=server run build:types && tsc -b --verbose",
+    "build:dev:watch": "npm --workspace=client run build:dev && npm --workspace=server run build:types && tsc -b --verbose --watch",
+    "build:prod": "npm run build:dev && npm run build:prod --workspaces --if-present",
+    "build:prod:browser": "npm run build:dev && npm run build:prod:browser --workspaces --if-present",
+    "build:prod:node": "npm run build:dev && npm run build:prod:node --workspaces --if-present",
+    "build:standalone": "npm --workspace=server run build:standalone",
+    "release:version": "node scripts/sync-version.mjs",
+    "release:check": "node scripts/check-version-sync.mjs",
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:fix": "npm run lint:fix --workspaces --if-present",
+    "test": "npm --workspace=server run test && sh ./scripts/e2e.sh",
+    "test:web": "vscode-test-web --extensionDevelopmentPath=. --browser=chromium --verbose",
+    "typescript:check-types": "tsc -b --verbose --noEmit",
+    "check:publication": "node scripts/check-private-paths.mjs && node scripts/check-retired-identifiers.mjs && node scripts/check-plugin-catalog.mjs",
+    "test:tooling": "node --test scripts/*.test.mjs",
+    "test:browser": "vscode-test-web --quality=stable --browser=chromium --headless --extensionDevelopmentPath=. --extensionTestsPath=scripts/browser-smoke.cjs client/testFixture",
+    "test:previews": "node scripts/test-preview-assets.mjs"
+  },
+  "files": [
+    "client/dist/node/speclynxClientMain.js",
+    "client/dist/browser/speclynxClientMain.js",
+    "client/dist/preview/webview",
+    "images/icon.png",
+    "server/dist/node/speclynxServerMain.js",
+    "server/dist/browser/speclynxServerMain.js",
+    "language-configuration.json",
+    "LICENSE",
+    "NOTICE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md",
+    "SUPPORT.md",
+    "client/dist/node/THIRD-PARTY-client-node-NOTICES.txt",
+    "client/dist/node/THIRD-PARTY-client-node-INVENTORY.json",
+    "client/dist/browser/THIRD-PARTY-client-browser-NOTICES.txt",
+    "client/dist/browser/THIRD-PARTY-client-browser-INVENTORY.json",
+    "server/dist/node/THIRD-PARTY-server-node-NOTICES.txt",
+    "server/dist/node/THIRD-PARTY-server-node-INVENTORY.json",
+    "server/dist/browser/THIRD-PARTY-server-browser-NOTICES.txt",
+    "server/dist/browser/THIRD-PARTY-server-browser-INVENTORY.json"
+  ],
+  "devDependencies": {
+    "@babel/cli": "^7.28.6",
+    "@babel/plugin-transform-runtime": "^7.29.0",
+    "@babel/preset-env": "^7.29.5",
+    "@babel/preset-typescript": "^7.28.5",
+    "@electron/rebuild": "^4.0.4",
+    "@eslint/js": "^10.0.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^25.9.1",
+    "@types/vscode": "^1.75.0",
+    "@vscode/test-web": "^0.0.80",
+    "@vscode/vsce": "^3.9.1",
+    "babel-loader": "^10.1.1",
+    "copy-webpack-plugin": "^14.0.0",
+    "eslint": "^10.4.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "file-loader": "^6.2.0",
+    "glob": "^13.0.6",
+    "marked": "^18.0.4",
+    "merge-options": "^3.0.4",
+    "mocha": "^12.0.0",
+    "null-loader": "^4.0.1",
+    "prettier": "^3.8.3",
+    "rimraf": "^6.1.3",
+    "terser-webpack-plugin": "^5.6.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.4",
+    "webpack-cli": "^7.0.2",
+    "license-webpack-plugin": "^4.0.2",
+    "spdx-expression-parse": "^3.0.1"
+  },
+  "activationEvents": [
+    "onLanguage:json",
+    "onLanguage:yaml"
+  ],
+  "extensionKind": [
+    "workspace",
+    "ui"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": true
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "apidom",
+        "aliases": [
+          "ApiDOM",
+          "OpenAPI",
+          "openapi"
+        ],
+        "filenames": [
+          "openapi.json",
+          "openapi.yaml",
+          "openapi.yml",
+          "swagger.json",
+          "swagger.yaml",
+          "swagger.yml"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./images/icon.png",
+          "dark": "./images/icon.png"
+        }
+      }
+    ],
+    "configurationDefaults": {
+      "[apidom]": {
+        "editor.semanticHighlighting.enabled": true,
+        "editor.occurrencesHighlight": "singleFile"
+      },
+      "editor.semanticTokenColorCustomizations": {
+        "rules": {
+          "swagger-host": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "swagger-base-path": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "swagger-schemes": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "swagger-consumes": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "swagger-produces": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "swagger-security": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "swagger-tags": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "definitions": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "parameterDefinitions": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "responseDefinitions": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "securityDefinitions": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "externalDocumentation": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "operation-consumes": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "operation-produces": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "openapi": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "info": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "jsonSchemaDialect": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "servers": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "paths": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "webhooks": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "components": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "security": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "tags": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "spec-version": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "channels": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "components-messages": {
+            "foreground": "#935ee0",
+            "fontStyle": "bold"
+          },
+          "messages": {
+            "foreground": "#935ee0",
+            "fontStyle": "italic"
+          },
+          "message": {
+            "foreground": "#935ee0"
+          },
+          "parameters": {
+            "foreground": "#935ee0",
+            "fontStyle": "italic"
+          },
+          "parameter": {
+            "foreground": "#935ee0",
+            "fontStyle": "italic"
+          },
+          "components-parameters": {
+            "foreground": "#935ee0",
+            "fontStyle": "bold"
+          },
+          "operation": {
+            "foreground": "#2e7edd",
+            "fontStyle": "bold"
+          },
+          "operation.httpMethod-GET": {
+            "foreground": "#007acc",
+            "fontStyle": "bold"
+          },
+          "operation.httpMethod-POST": {
+            "foreground": "#009e6b",
+            "fontStyle": "bold"
+          },
+          "reference-element": {
+            "foreground": "#cc5500",
+            "fontStyle": "bold"
+          },
+          "reference-value": {
+            "foreground": "#d66a00",
+            "fontStyle": "italic"
+          },
+          "components-schemas": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "schema": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "JSONSchema202012": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "pathItem": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "channelItem": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "requestBody": {
+            "foreground": "#6b8e23",
+            "fontStyle": "italic"
+          },
+          "responses": {
+            "foreground": "#6b8e23",
+            "fontStyle": "italic"
+          },
+          "components-responses": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "components-request-bodies": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "content": {
+            "foreground": "#6b8e23"
+          },
+          "mediaType": {
+            "foreground": "#6b8e23"
+          },
+          "response": {
+            "foreground": "#6b8e23"
+          },
+          "server": {
+            "foreground": "#6b8e23"
+          },
+          "components-examples": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "components-headers": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "components-links": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "components-security-schemes": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "components-callbacks": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "components-pathItems": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "components-path-items": {
+            "foreground": "#6b8e23",
+            "fontStyle": "bold"
+          },
+          "value": {
+            "foreground": "#339933"
+          },
+          "value.string": {
+            "foreground": "#339933"
+          },
+          "value.number": {
+            "foreground": "#339933"
+          },
+          "key.string": {
+            "foreground": "#cc6600"
+          },
+          "key.number": {
+            "foreground": "#cc6600"
+          },
+          "api-version": {
+            "foreground": "#008bbd"
+          },
+          "server-url": {
+            "foreground": "#008bbd"
+          },
+          "callback": {
+            "foreground": "#008bbd"
+          },
+          "contact": {
+            "foreground": "#008bbd"
+          },
+          "discriminator": {
+            "foreground": "#008bbd"
+          },
+          "example": {
+            "foreground": "#008bbd"
+          },
+          "examples": {
+            "foreground": "#008bbd"
+          },
+          "header": {
+            "foreground": "#008bbd"
+          },
+          "license": {
+            "foreground": "#008bbd"
+          },
+          "oAuthFlow": {
+            "foreground": "#008bbd"
+          },
+          "oAuthFlows": {
+            "foreground": "#008bbd"
+          },
+          "operation-example": {
+            "foreground": "#008bbd"
+          },
+          "operation-callbacks": {
+            "foreground": "#008bbd"
+          },
+          "securityScheme": {
+            "foreground": "#008bbd"
+          },
+          "server-variables": {
+            "foreground": "#008bbd"
+          },
+          "messageTrait": {
+            "foreground": "#008bbd"
+          },
+          "operationTrait": {
+            "foreground": "#008bbd"
+          },
+          "version": {
+            "foreground": "#008bbd"
+          },
+          "title": {
+            "foreground": "#008bbd"
+          },
+          "specVersion": {
+            "foreground": "#008bbd"
+          },
+          "asyncApiVersion": {
+            "foreground": "#008bbd"
+          },
+          "openapi-reference": {
+            "foreground": "#d66a00"
+          },
+          "reference": {
+            "foreground": "#d66a00"
+          },
+          "step": {
+            "foreground": "#d66a00"
+          },
+          "asyncapi-reference": {
+            "foreground": "#d66a00"
+          },
+          "json-reference": {
+            "foreground": "#d66a00"
+          }
+        },
+        "[Default Dark+]": {
+          "enabled": true,
+          "rules": {
+            "swagger-host": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "swagger-base-path": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "swagger-schemes": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "swagger-consumes": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "swagger-produces": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "swagger-security": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "swagger-tags": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "definitions": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "parameterDefinitions": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "responseDefinitions": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "securityDefinitions": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "externalDocumentation": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "operation-consumes": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "operation-produces": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "openapi": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "info": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "jsonSchemaDialect": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "servers": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "paths": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "webhooks": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "components": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "security": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "tags": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "spec-version": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "channels": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "components-messages": {
+              "foreground": "#C678DD",
+              "fontStyle": "bold"
+            },
+            "messages": {
+              "foreground": "#C678DD",
+              "fontStyle": "italic"
+            },
+            "message": {
+              "foreground": "#C678DD"
+            },
+            "operation": {
+              "foreground": "#66afce",
+              "fontStyle": "bold"
+            },
+            "operation.httpMethod-GET": {
+              "foreground": "#0099ff",
+              "fontStyle": "bold"
+            },
+            "operation.httpMethod-POST": {
+              "foreground": "#00cc99",
+              "fontStyle": "bold"
+            },
+            "parameters": {
+              "foreground": "#C678DD",
+              "fontStyle": "italic"
+            },
+            "parameter": {
+              "foreground": "#C678DD",
+              "fontStyle": "italic"
+            },
+            "components-parameters": {
+              "foreground": "#C678DD",
+              "fontStyle": "bold"
+            },
+            "reference-element": {
+              "foreground": "#ff5500",
+              "fontStyle": "bold"
+            },
+            "reference-value": {
+              "foreground": "#ffddcc",
+              "fontStyle": "italic"
+            },
+            "components-schemas": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "schema": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "pathItem": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "channelItem": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "requestBody": {
+              "foreground": "#ceca84",
+              "fontStyle": "italic"
+            },
+            "responses": {
+              "foreground": "#ceca84",
+              "fontStyle": "italic"
+            },
+            "components-responses": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-request-bodies": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "content": {
+              "foreground": "#ceca84"
+            },
+            "mediaType": {
+              "foreground": "#ceca84"
+            },
+            "response": {
+              "foreground": "#ceca84"
+            },
+            "server": {
+              "foreground": "#ceca84"
+            },
+            "components-examples": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-headers": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-links": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-security-schemes": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-callbacks": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-pathItems": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-path-items": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "value": {
+              "foreground": "#98C379"
+            },
+            "value.string": {
+              "foreground": "#98C379"
+            },
+            "value.number": {
+              "foreground": "#98C379"
+            },
+            "key.string": {
+              "foreground": "#e8b9bb"
+            },
+            "key.number": {
+              "foreground": "#e8b9bb"
+            },
+            "api-version": {
+              "foreground": "#1de2fa"
+            },
+            "server-url": {
+              "foreground": "#1de2fa"
+            },
+            "callback": {
+              "foreground": "#1de2fa"
+            },
+            "contact": {
+              "foreground": "#1de2fa"
+            },
+            "discriminator": {
+              "foreground": "#1de2fa"
+            },
+            "example": {
+              "foreground": "#1de2fa"
+            },
+            "examples": {
+              "foreground": "#1de2fa"
+            },
+            "header": {
+              "foreground": "#1de2fa"
+            },
+            "license": {
+              "foreground": "#1de2fa"
+            },
+            "oAuthFlow": {
+              "foreground": "#1de2fa"
+            },
+            "oAuthFlows": {
+              "foreground": "#1de2fa"
+            },
+            "operation-example": {
+              "foreground": "#1de2fa"
+            },
+            "operation-callbacks": {
+              "foreground": "#1de2fa"
+            },
+            "securityScheme": {
+              "foreground": "#1de2fa"
+            },
+            "server-variables": {
+              "foreground": "#1de2fa"
+            },
+            "messageTrait": {
+              "foreground": "#1de2fa"
+            },
+            "operationTrait": {
+              "foreground": "#1de2fa"
+            },
+            "version": {
+              "foreground": "#1de2fa"
+            },
+            "title": {
+              "foreground": "#1de2fa"
+            },
+            "specVersion": {
+              "foreground": "#1de2fa"
+            },
+            "asyncApiVersion": {
+              "foreground": "#1de2fa"
+            },
+            "openapi-reference": {
+              "foreground": "#ff9966"
+            },
+            "reference": {
+              "foreground": "#ff9966"
+            },
+            "asyncapi-reference": {
+              "foreground": "#ff9966"
+            },
+            "json-reference": {
+              "foreground": "#ff9966"
+            }
+          }
+        },
+        "[Default Light+]": {
+          "enabled": true,
+          "rules": {
+            "swagger-host": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "swagger-base-path": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "swagger-schemes": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "swagger-consumes": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "swagger-produces": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "swagger-security": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "swagger-tags": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "definitions": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "parameterDefinitions": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "responseDefinitions": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "securityDefinitions": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "externalDocumentation": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "operation-consumes": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "operation-produces": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "openapi": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "info": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "jsonSchemaDialect": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "servers": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "paths": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "webhooks": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "components": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "security": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "tags": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "spec-version": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "channels": {
+              "foreground": "#000033",
+              "fontStyle": "bold"
+            },
+            "components-messages": {
+              "foreground": "#993399",
+              "fontStyle": "bold"
+            },
+            "messages": {
+              "foreground": "#993399",
+              "fontStyle": "italic"
+            },
+            "message": {
+              "foreground": "#993399"
+            },
+            "operation": {
+              "foreground": "#66afce",
+              "fontStyle": "bold"
+            },
+            "operation.httpMethod-GET": {
+              "foreground": "#006699",
+              "fontStyle": "bold"
+            },
+            "operation.httpMethod-POST": {
+              "foreground": "#339966",
+              "fontStyle": "bold"
+            },
+            "parameters": {
+              "foreground": "#993399",
+              "fontStyle": "italic"
+            },
+            "parameter": {
+              "foreground": "#993399",
+              "fontStyle": "italic"
+            },
+            "components-parameters": {
+              "foreground": "#993399",
+              "fontStyle": "bold"
+            },
+            "reference-element": {
+              "foreground": "#cc3300",
+              "fontStyle": "bold"
+            },
+            "reference-value": {
+              "foreground": "#ff5500",
+              "fontStyle": "italic"
+            },
+            "components-schemas": {
+              "foreground": "#666633",
+              "fontStyle": "bold"
+            },
+            "schema": {
+              "foreground": "#666633",
+              "fontStyle": "bold"
+            },
+            "pathItem": {
+              "foreground": "#666633",
+              "fontStyle": "bold"
+            },
+            "channelItem": {
+              "foreground": "#666633",
+              "fontStyle": "bold"
+            },
+            "requestBody": {
+              "foreground": "#666633",
+              "fontStyle": "italic"
+            },
+            "responses": {
+              "foreground": "#666633",
+              "fontStyle": "italic"
+            },
+            "components-responses": {
+              "foreground": "#666633",
+              "fontStyle": "bold"
+            },
+            "components-request-bodies": {
+              "foreground": "#666633",
+              "fontStyle": "bold"
+            },
+            "content": {
+              "foreground": "#666633"
+            },
+            "mediaType": {
+              "foreground": "#666633"
+            },
+            "response": {
+              "foreground": "#666633"
+            },
+            "server": {
+              "foreground": "#666633"
+            },
+            "components-examples": {
+              "foreground": "#666633",
+              "fontStyle": "bold"
+            },
+            "components-headers": {
+              "foreground": "#666633",
+              "fontStyle": "bold"
+            },
+            "components-links": {
+              "foreground": "#666633",
+              "fontStyle": "bold"
+            },
+            "components-security-schemes": {
+              "foreground": "#666633",
+              "fontStyle": "bold"
+            },
+            "components-callbacks": {
+              "foreground": "#666633",
+              "fontStyle": "bold"
+            },
+            "components-pathItems": {
+              "foreground": "#666633",
+              "fontStyle": "bold"
+            },
+            "components-path-items": {
+              "foreground": "#666633",
+              "fontStyle": "bold"
+            },
+            "value": {
+              "foreground": "#339933"
+            },
+            "value.string": {
+              "foreground": "#339933"
+            },
+            "value.number": {
+              "foreground": "#339933"
+            },
+            "key.string": {
+              "foreground": "#cc6600"
+            },
+            "key.number": {
+              "foreground": "#cc6600"
+            },
+            "api-version": {
+              "foreground": "#0099cc"
+            },
+            "server-url": {
+              "foreground": "#0099cc"
+            },
+            "callback": {
+              "foreground": "#0099cc"
+            },
+            "contact": {
+              "foreground": "#0099cc"
+            },
+            "discriminator": {
+              "foreground": "#0099cc"
+            },
+            "example": {
+              "foreground": "#0099cc"
+            },
+            "examples": {
+              "foreground": "#0099cc"
+            },
+            "header": {
+              "foreground": "#0099cc"
+            },
+            "license": {
+              "foreground": "#0099cc"
+            },
+            "oAuthFlow": {
+              "foreground": "#0099cc"
+            },
+            "oAuthFlows": {
+              "foreground": "#0099cc"
+            },
+            "operation-example": {
+              "foreground": "#0099cc"
+            },
+            "operation-callbacks": {
+              "foreground": "#0099cc"
+            },
+            "securityScheme": {
+              "foreground": "#0099cc"
+            },
+            "server-variables": {
+              "foreground": "#0099cc"
+            },
+            "messageTrait": {
+              "foreground": "#0099cc"
+            },
+            "operationTrait": {
+              "foreground": "#0099cc"
+            },
+            "version": {
+              "foreground": "#0099cc"
+            },
+            "title": {
+              "foreground": "#0099cc"
+            },
+            "specVersion": {
+              "foreground": "#0099cc"
+            },
+            "asyncApiVersion": {
+              "foreground": "#0099cc"
+            },
+            "openapi-reference": {
+              "foreground": "#ff9966"
+            },
+            "reference": {
+              "foreground": "#ff9966"
+            },
+            "asyncapi-reference": {
+              "foreground": "#ff9966"
+            },
+            "json-reference": {
+              "foreground": "#ff9966"
+            }
+          }
+        },
+        "[Default High Contrast Light]": {
+          "enabled": true,
+          "rules": {
+            "swagger-host": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "swagger-base-path": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "swagger-schemes": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "swagger-consumes": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "swagger-produces": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "swagger-security": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "swagger-tags": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "definitions": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "parameterDefinitions": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "responseDefinitions": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "securityDefinitions": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "externalDocumentation": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "operation-consumes": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "operation-produces": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "openapi": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "info": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "jsonSchemaDialect": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "servers": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "paths": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "webhooks": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "components": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "security": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "tags": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "spec-version": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "channels": {
+              "foreground": "#d0d0e3",
+              "fontStyle": "bold"
+            },
+            "components-messages": {
+              "foreground": "#C678DD",
+              "fontStyle": "bold"
+            },
+            "messages": {
+              "foreground": "#C678DD",
+              "fontStyle": "italic"
+            },
+            "message": {
+              "foreground": "#C678DD"
+            },
+            "operation": {
+              "foreground": "#66afce",
+              "fontStyle": "bold"
+            },
+            "operation.httpMethod-GET": {
+              "foreground": "#0099ff",
+              "fontStyle": "bold"
+            },
+            "operation.httpMethod-POST": {
+              "foreground": "#00cc99",
+              "fontStyle": "bold"
+            },
+            "parameters": {
+              "foreground": "#C678DD",
+              "fontStyle": "italic"
+            },
+            "parameter": {
+              "foreground": "#C678DD",
+              "fontStyle": "italic"
+            },
+            "components-parameters": {
+              "foreground": "#C678DD",
+              "fontStyle": "bold"
+            },
+            "reference-element": {
+              "foreground": "#ff5500",
+              "fontStyle": "bold"
+            },
+            "reference-value": {
+              "foreground": "#ffddcc",
+              "fontStyle": "italic"
+            },
+            "components-schemas": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "schema": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "pathItem": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "channelItem": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "requestBody": {
+              "foreground": "#ceca84",
+              "fontStyle": "italic"
+            },
+            "responses": {
+              "foreground": "#ceca84",
+              "fontStyle": "italic"
+            },
+            "components-responses": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-request-bodies": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "content": {
+              "foreground": "#ceca84"
+            },
+            "mediaType": {
+              "foreground": "#ceca84"
+            },
+            "response": {
+              "foreground": "#ceca84"
+            },
+            "server": {
+              "foreground": "#ceca84"
+            },
+            "components-examples": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-headers": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-links": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-security-schemes": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-callbacks": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-pathItems": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "components-path-items": {
+              "foreground": "#ceca84",
+              "fontStyle": "bold"
+            },
+            "value": {
+              "foreground": "#98C379"
+            },
+            "value.string": {
+              "foreground": "#98C379"
+            },
+            "value.number": {
+              "foreground": "#98C379"
+            },
+            "key.string": {
+              "foreground": "#e8b9bb"
+            },
+            "key.number": {
+              "foreground": "#e8b9bb"
+            },
+            "api-version": {
+              "foreground": "#1de2fa"
+            },
+            "server-url": {
+              "foreground": "#1de2fa"
+            },
+            "callback": {
+              "foreground": "#1de2fa"
+            },
+            "contact": {
+              "foreground": "#1de2fa"
+            },
+            "discriminator": {
+              "foreground": "#1de2fa"
+            },
+            "example": {
+              "foreground": "#1de2fa"
+            },
+            "examples": {
+              "foreground": "#1de2fa"
+            },
+            "header": {
+              "foreground": "#1de2fa"
+            },
+            "license": {
+              "foreground": "#1de2fa"
+            },
+            "oAuthFlow": {
+              "foreground": "#1de2fa"
+            },
+            "oAuthFlows": {
+              "foreground": "#1de2fa"
+            },
+            "operation-example": {
+              "foreground": "#1de2fa"
+            },
+            "operation-callbacks": {
+              "foreground": "#1de2fa"
+            },
+            "securityScheme": {
+              "foreground": "#1de2fa"
+            },
+            "server-variables": {
+              "foreground": "#1de2fa"
+            },
+            "messageTrait": {
+              "foreground": "#1de2fa"
+            },
+            "operationTrait": {
+              "foreground": "#1de2fa"
+            },
+            "version": {
+              "foreground": "#1de2fa"
+            },
+            "title": {
+              "foreground": "#1de2fa"
+            },
+            "specVersion": {
+              "foreground": "#1de2fa"
+            },
+            "asyncApiVersion": {
+              "foreground": "#1de2fa"
+            },
+            "openapi-reference": {
+              "foreground": "#ff9966"
+            },
+            "reference": {
+              "foreground": "#ff9966"
+            },
+            "asyncapi-reference": {
+              "foreground": "#ff9966"
+            },
+            "json-reference": {
+              "foreground": "#ff9966"
+            }
+          }
+        }
+      }
+    },
+    "configuration": [
+      {
+        "id": "speclynx.openapi.preview",
+        "title": "Preview",
+        "order": 0,
+        "type": "object",
+        "properties": {
+          "speclynx.openapi.preview.renderer": {
+            "scope": "resource",
+            "type": "string",
+            "enum": [
+              "scalar",
+              "swagger-ui"
+            ],
+            "default": "scalar",
+            "description": "Select which renderer to use for API documentation preview."
+          }
+        }
+      },
+      {
+        "id": "speclynx.openapi.validation.jsonSchema",
+        "title": "JSON Schema Validation",
+        "order": 1,
+        "type": "object",
+        "properties": {
+          "speclynx.openapi.validation.applyJsonSchemaValidation": {
+            "scope": "resource",
+            "type": "boolean",
+            "default": true,
+            "description": "Applies JSON Schema validation."
+          },
+          "speclynx.openapi.validation.betterErrorsForJsonSchema": {
+            "scope": "resource",
+            "type": "boolean",
+            "default": true,
+            "description": "Uses better error messages for JSON Schema validation."
+          }
+        }
+      },
+      {
+        "id": "speclynx.openapi.validation.semantic",
+        "title": "Semantic Validation",
+        "order": 2,
+        "type": "object",
+        "properties": {
+          "speclynx.openapi.validation.applySemanticValidation": {
+            "scope": "resource",
+            "type": "boolean",
+            "default": false,
+            "description": "Applies semantic validation."
+          },
+          "speclynx.openapi.validation.referenceValidation": {
+            "scope": "resource",
+            "type": "boolean",
+            "default": true,
+            "description": "Applies reference validation."
+          },
+          "speclynx.openapi.validation.semanticLinting": {
+            "scope": "resource",
+            "type": "boolean",
+            "default": true,
+            "description": "Applies semantic linting (Warning/Info level)."
+          },
+          "speclynx.openapi.validation.semanticRulesFile": {
+            "scope": "resource",
+            "type": "string",
+            "description": "Location of the file to use for custom semantic validation/linting.\nWhen unset, the first file named speclynx.json, speclynx.yaml, speclynx.yml, .speclynx.json, .speclynx.yaml or .speclynx.yml found anywhere in the workspace is used.\n\nWhen the extension runs in a browser-based VS Code instance (e.g. vscode.dev or a GitHub Codespace), only files that reside inside the current workspace can be referenced."
+          },
+          "speclynx.openapi.validation.semanticMaxNumberOfProblems": {
+            "scope": "resource",
+            "type": "number",
+            "default": 100,
+            "description": "Controls the maximum number of problems produced by the server."
+          }
+        }
+      },
+      {
+        "id": "speclynx.openapi.validation.spectral",
+        "title": "Spectral Validation",
+        "order": 3,
+        "type": "object",
+        "properties": {
+          "speclynx.openapi.validation.applySpectralValidation": {
+            "scope": "resource",
+            "type": "boolean",
+            "default": false,
+            "description": "Applies Spectral validation/linting."
+          },
+          "speclynx.openapi.validation.spectralRulesFile": {
+            "scope": "resource",
+            "type": "string",
+            "description": "Location of the file to use for Spectral validation/linting.\nWhen unset, the first file named .spectral.json, .spectral.yaml or .spectral.yml found anywhere in the workspace is used.\n\nWhen the extension runs in a browser-based VS Code instance (e.g. vscode.dev or a GitHub Codespace), only files that reside inside the current workspace can be referenced."
+          },
+          "speclynx.openapi.validation.markFirstLineOnlyOfSpectralProblem": {
+            "scope": "resource",
+            "type": "boolean",
+            "default": true,
+            "description": "If true, mark only the first line of any Spectral violation."
+          }
+        }
+      },
+      {
+        "id": "speclynx.openapi.logging",
+        "title": "Logging",
+        "order": 4,
+        "type": "object",
+        "properties": {
+          "speclynx.openapi.logging.server": {
+            "scope": "resource",
+            "type": "string",
+            "enum": [
+              "off",
+              "messages",
+              "verbose"
+            ],
+            "default": "messages",
+            "tags": [
+              "logging"
+            ],
+            "description": "Traces the communication between VS Code and the language server."
+          }
+        }
+      }
+    ],
+    "commands": [
+      {
+        "command": "openapiToolkit.preview",
+        "title": "Show API Document preview",
+        "category": "OpenAPI Toolkit"
+      },
+      {
+        "command": "openapiToolkit.dereferenceDocument",
+        "title": "Dereference API Document",
+        "category": "OpenAPI Toolkit"
+      },
+      {
+        "command": "openapiToolkit.convertJsonToYaml",
+        "title": "Convert to YAML",
+        "category": "OpenAPI Toolkit"
+      },
+      {
+        "command": "openapiToolkit.convertYamlToJson",
+        "title": "Convert to JSON",
+        "category": "OpenAPI Toolkit"
+      },
+      {
+        "command": "openapiToolkit.pickRulesFile",
+        "title": "Pick Semantic Validatation/Linting Rules File",
+        "category": "OpenAPI Toolkit"
+      },
+      {
+        "command": "openapiToolkit.pickSpectralRulesFile",
+        "title": "Pick Spectral Validatation/Linting Rules File",
+        "category": "OpenAPI Toolkit"
+      },
+      {
+        "command": "openapiToolkit.reloadRules",
+        "title": "Reload Validatation/Linting Rules File",
+        "category": "OpenAPI Toolkit"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "openapiToolkit.editor.context",
+        "label": "OpenAPI Toolkit"
+      },
+      {
+        "id": "openapiToolkit.explorer.context",
+        "label": "OpenAPI Toolkit"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "submenu": "openapiToolkit.editor.context",
+          "group": "z_commands"
+        }
+      ],
+      "explorer/context": [
+        {
+          "submenu": "openapiToolkit.explorer.context",
+          "group": "2_workspace"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "openapiToolkit.preview",
+          "when": "editorLangId == apidom"
+        },
+        {
+          "command": "openapiToolkit.dereferenceDocument",
+          "when": "editorLangId == apidom"
+        },
+        {
+          "command": "openapiToolkit.convertJsonToYaml",
+          "when": "editorLangId == apidom && openapiToolkit.isApiDOMJSON"
+        },
+        {
+          "command": "openapiToolkit.convertYamlToJson",
+          "when": "editorLangId == apidom && openapiToolkit.isApiDOMYAML"
+        },
+        {
+          "command": "openapiToolkit.pickSpectralRulesFile",
+          "when": "editorLangId == apidom"
+        },
+        {
+          "command": "openapiToolkit.pickRulesFile",
+          "when": "editorLangId == apidom"
+        },
+        {
+          "command": "openapiToolkit.reloadRules",
+          "when": "editorLangId == apidom"
+        }
+      ],
+      "openapiToolkit.explorer.context": [
+        {
+          "command": "openapiToolkit.preview",
+          "when": "resourceLangId == apidom",
+          "group": "2_workspace@1"
+        },
+        {
+          "command": "openapiToolkit.dereferenceDocument",
+          "when": "resourceLangId == apidom",
+          "group": "2_workspace@2"
+        },
+        {
+          "command": "openapiToolkit.convertJsonToYaml",
+          "when": "resourceLangId == apidom && openapiToolkit.isApiDOMJSON",
+          "group": "2_workspace@3"
+        },
+        {
+          "command": "openapiToolkit.convertYamlToJson",
+          "when": "resourceLangId == apidom && openapiToolkit.isApiDOMYAML",
+          "group": "2_workspace@4"
+        },
+        {
+          "command": "openapiToolkit.pickSpectralRulesFile",
+          "when": "resourceLangId == apidom",
+          "group": "2_workspace@5"
+        },
+        {
+          "command": "openapiToolkit.pickRulesFile",
+          "when": "resourceLangId == apidom",
+          "group": "2_workspace@6"
+        },
+        {
+          "command": "openapiToolkit.reloadRules",
+          "when": "resourceLangId == apidom",
+          "group": "2_workspace@7"
+        }
+      ],
+      "openapiToolkit.editor.context": [
+        {
+          "command": "openapiToolkit.preview",
+          "when": "editorLangId == apidom",
+          "group": "z_commands@1"
+        },
+        {
+          "command": "openapiToolkit.dereferenceDocument",
+          "when": "editorLangId == apidom",
+          "group": "z_commands@2"
+        },
+        {
+          "command": "openapiToolkit.convertJsonToYaml",
+          "when": "editorLangId == apidom && openapiToolkit.isApiDOMJSON",
+          "group": "z_commands@3"
+        },
+        {
+          "command": "openapiToolkit.convertYamlToJson",
+          "when": "editorLangId == apidom && openapiToolkit.isApiDOMYAML",
+          "group": "z_commands@4"
+        },
+        {
+          "command": "openapiToolkit.pickSpectralRulesFile",
+          "when": "editorLangId == apidom",
+          "group": "z_commands@5"
+        },
+        {
+          "command": "openapiToolkit.pickRulesFile",
+          "when": "editorLangId == apidom",
+          "group": "z_commands@6"
+        },
+        {
+          "command": "openapiToolkit.reloadRules",
+          "when": "editorLangId == apidom",
+          "group": "z_commands@7"
+        }
+      ]
+    }
+  }
+}

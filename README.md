@@ -17,9 +17,9 @@
 [![Open VSX installs](https://img.shields.io/open-vsx/dt/SpecLynx/vscode-openapi-toolkit?label=Open%20VSX%20installs)](https://open-vsx.org/extension/SpecLynx/vscode-openapi-toolkit)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-📖 **Documentation:** [speclynx.com/openapi-toolkit](https://speclynx.com/openapi-toolkit/)  
-🛍️ **Install:** [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=SpecLynx.vscode-openapi-toolkit) · [Open VSX](https://open-vsx.org/extension/SpecLynx/vscode-openapi-toolkit) (for VS Code–compatible editors like VSCodium/Cursor)  
-🚀 **Releases:** [GitHub releases](https://github.com/speclynx/vscode-openapi-toolkit/releases)  
+📖 **Documentation:** [speclynx.com/openapi-toolkit](https://speclynx.com/openapi-toolkit/)<br>
+🛍️ **Install:** [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=SpecLynx.vscode-openapi-toolkit) · [Open VSX](https://open-vsx.org/extension/SpecLynx/vscode-openapi-toolkit) (for VS Code–compatible editors like VSCodium/Cursor)<br>
+🚀 **Releases:** [GitHub releases](https://github.com/speclynx/vscode-openapi-toolkit/releases)<br>
 🧾 **Changelog:** [VS Code Marketplace changelog](https://marketplace.visualstudio.com/items/SpecLynx.vscode-openapi-toolkit/changelog)
 
 ---
@@ -121,3 +121,23 @@ Report bugs or request features on [GitHub Issues](https://github.com/speclynx/v
 ## License
 
 Licensed under the **Apache License 2.0**. See [LICENSE](LICENSE).
+
+## Language server and Claude Code
+
+The same language features are available to other editors through the standalone
+[`@speclynx/api-language-server`](./server/README.md). Its `speclynx-lsp --stdio`
+command speaks the Language Server Protocol and does not require VS Code.
+The first npm publication is planned for 1.6.0; until then use the
+[local build instructions](./CONTRIBUTING.md).
+
+The [SpecLynx LSP plugin](./plugins/speclynx-lsp/README.md) integrates the server with
+Claude Code. The marketplace catalog is initially empty. After the first server release
+and plugin verification, install it with:
+
+```text
+/plugin marketplace add speclynx/vscode-openapi-toolkit
+/plugin install speclynx-lsp@speclynx
+```
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development, testing and local plugin use,
+and [RELEASE.md](./RELEASE.md) for the release process.

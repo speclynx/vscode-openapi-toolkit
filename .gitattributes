@@ -1,0 +1,6 @@
+# Preserve exact upstream bytes, including whitespace inside bundled string literals.
+client/src/preview/webview/scalar/scalar.js -whitespace
+client/src/preview/webview/scalar/scalar.css -whitespace
+client/src/preview/webview/scalar/chunks/vendor-CgFCS9Na.js -whitespace
+client/src/preview/webview/scalar/THIRD-PARTY-NOTICES.txt -whitespace
+client/src/preview/webview/swagger-ui/swagger-ui-bundle.js.LICENSE.txt -whitespace

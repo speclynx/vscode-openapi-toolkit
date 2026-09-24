@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: 'daily'
+      time: '23:00'
+    commit-message:
+      prefix: 'chore'
+      include: 'scope'
+    open-pull-requests-limit: 5
+
+  # Without this the pinned action versions go stale silently, as they did with
+  # checkout@v3 and setup-node@v3.
+  - package-ecosystem: github-actions
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    commit-message:
+      prefix: 'ci'
+      include: 'scope'
+    open-pull-requests-limit: 5
+
+# plugins/speclynx-lsp is deliberately not watched. Its pin on
+# @speclynx/api-language-server is the released version, maintained by
+# scripts/sync-version.mjs; a Dependabot bump there would break version sync.

@@ -1,0 +1,8 @@
+{
+  "externalParameter": {
+    "name": "extParam",
+    "in": "query",
+    "description": "ID of the user"
+  }
+}
+

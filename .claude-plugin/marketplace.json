@@ -1,0 +1,9 @@
+{
+  "name": "speclynx",
+  "owner": {
+    "name": "SpecLynx",
+    "email": "info@speclynx.com"
+  },
+  "description": "API tooling for coding agents, powered by ApiDOM.",
+  "plugins": []
+}

@@ -1,0 +1,67 @@
+{
+  "name": "vscode-openapi-toolkit-client",
+  "description": "SpecLynx VSCode Extension and LSP Client",
+  "homepage": "https://github.com/speclynx/vscode-openapi-toolkit",
+  "publisher": "SpecLynx",
+  "author": "SpecLynx",
+  "license": "Apache-2.0",
+  "contributors": [
+    {
+      "name": "Francesco Tumanischvili",
+      "email": "frantuma@yahoo.com"
+    },
+    {
+      "name": "Vladimír Gorej",
+      "email": "vladimir.gorej@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/speclynx/vscode-openapi-toolkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/speclynx/vscode-openapi-toolkit/issues"
+  },
+  "version": "1.5.3",
+  "private": true,
+  "engines": {
+    "vscode": "^1.75.0",
+    "node": ">=16.14.2"
+  },
+  "scripts": {
+    "clean": "npm run clean:dev && npm run clean:prod",
+    "clean:dev": "rimraf out",
+    "clean:prod": "rimraf dist",
+    "build:dev": "mkdir -p out/preview && cp -R src/preview/webview out/preview/",
+    "build:prod": "npm run clean:prod && npm run build:prod:node && npm run build:prod:browser",
+    "build:prod:node": "webpack --config config/webpack.node.cjs --progress",
+    "build:prod:browser": "webpack --config config/webpack.browser.cjs --progress",
+    "typescript:check-types": "tsc --noEmit",
+    "typescript:check-types:watch": "npm run typescript:check-types -- --watch",
+    "lint": "eslint ./",
+    "lint:fix": "eslint ./ --fix"
+  },
+  "dependencies": {
+    "@speclynx/apidom-core": "^5.1.0",
+    "@speclynx/apidom-datamodel": "^5.1.0",
+    "@speclynx/apidom-parser": "^5.1.0",
+    "@speclynx/apidom-parser-adapter-json": "^5.1.0",
+    "@speclynx/apidom-parser-adapter-openapi-json-2": "^5.1.0",
+    "@speclynx/apidom-parser-adapter-openapi-json-3-0": "^5.1.0",
+    "@speclynx/apidom-parser-adapter-openapi-json-3-1": "^5.1.0",
+    "@speclynx/apidom-parser-adapter-openapi-yaml-2": "^5.1.0",
+    "@speclynx/apidom-parser-adapter-openapi-yaml-3-0": "^5.1.0",
+    "@speclynx/apidom-parser-adapter-openapi-yaml-3-1": "^5.1.0",
+    "@speclynx/apidom-parser-adapter-yaml-1-2": "^5.1.0",
+    "@speclynx/apidom-reference": "^5.1.0",
+    "@types/lodash.debounce": "^4.0.9",
+    "lodash.debounce": "^4.0.8",
+    "node-fetch": "^3.3.2",
+    "vscode-languageclient": "^9.0.1",
+    "vscode-languageserver-types": "^3.17.5",
+    "vscode-uri": "^3.1.0"
+  },
+  "devDependencies": {
+    "@vscode/test-electron": "^2.5.2"
+  }
+}

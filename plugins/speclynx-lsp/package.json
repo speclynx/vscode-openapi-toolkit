@@ -1,0 +1,12 @@
+{
+  "name": "speclynx-lsp-plugin",
+  "version": "1.5.3",
+  "private": true,
+  "description": "Dependency manifest for the Claude Code plugin. Claude Code installs this into the plugin's cached copy, which is where .lsp.json looks for the server. The server is pinned exactly so that a given plugin version always runs the server released with it.",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@speclynx/api-language-server": "1.5.3"
+  }
+}

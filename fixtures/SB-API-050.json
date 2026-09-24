@@ -1,0 +1,103 @@
+[
+  {
+    "name": "SL-API-050-property-names",
+    "description": "property names must be camelCase and alphanumeric",
+    "recommended": true,
+    "code": 20001,
+    "source": "speclynx-lint",
+    "severity": 1,
+    "message": "properties MUST follow camelCase",
+    "given": [
+      "schema"
+    ],
+    "conditions": [
+      {
+        "targets": [
+          {
+            "path": "parent"
+          }
+        ],
+        "function": "apilintElementOrClass",
+        "params": [
+          [
+            "json-schema-properties"
+          ]
+        ]
+      }
+    ],
+    "linterFunction": "apilintKeyCasing",
+    "linterParams": [
+      "camel"
+    ],
+    "marker": "key",
+    "data": {}
+  },
+  {
+    "name": "SL-API-050-query-parameter-names",
+    "description": "query parameter names must be camelCase",
+    "recommended": true,
+    "code": 20002,
+    "source": "speclynx-lint",
+    "severity": 1,
+    "message": "parameter names MUST follow camelCase",
+    "given": [
+      "parameter"
+    ],
+    "target": "name",
+    "conditions": [
+      {
+        "targets": [
+          {
+            "path": "in"
+          }
+        ],
+        "function": "apilintValueOrArray",
+        "params": [
+          [
+            "query"
+          ]
+        ]
+      }
+    ],
+    "linterFunction": "apilintValueCasing",
+    "linterParams": [
+      "camel"
+    ],
+    "marker": "key",
+    "markerTarget": "name",
+    "data": {}
+  },
+  {
+    "name": "SL-API-051-path-segments",
+    "description": "path segments must be kebab-case",
+    "recommended": true,
+    "code": 20003,
+    "source": "speclynx-lint",
+    "severity": 1,
+    "message": "path segments MUST follow kebab-case (lower case and separated with hyphens).",
+    "given": [
+      "pathItem"
+    ],
+    "conditions": [
+      {
+        "targets": [
+          {
+            "path": "parent"
+          }
+        ],
+        "function": "apilintElementOrClass",
+        "params": [
+          [
+            "paths"
+          ]
+        ]
+      }
+    ],
+    "linterFunction": "apilintKeyRegex",
+    "linterParams": [
+      "^(/|[a-z0-9-.]+|{[a-zA-Z0-9_]+})+$"
+    ],
+    "marker": "key",
+    "data": {}
+  }
+]

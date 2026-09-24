@@ -1,0 +1,23 @@
+openapi: 3.1.0
+info:
+  title: domain
+  version: 1.0.0
+paths: {}
+components:
+  parameters:
+    externalDomainParameter:
+      name: externalDomainParameter
+      in: query
+      description: this is parameter stored in domain external file
+      required: true
+  schemas:
+    foo:
+      type: string
+    bar:
+      $id: http://localhost:8082/
+      type: string
+    cas:
+      type: object
+      properties:
+        aa:
+          type: string
