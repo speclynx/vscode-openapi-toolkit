@@ -41,7 +41,11 @@ bundles first with `npm run build:prod:browser`.
 
 ## Verify changes
 
+Generate the server declarations before typed lint and type checks. The standalone
+consumer fixture resolves the package name through its published exports map.
+
 ```sh
+npm run build:types --workspace=server
 npm run lint
 npm run typescript:check-types
 npm run check:publication
