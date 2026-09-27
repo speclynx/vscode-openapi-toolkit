@@ -87,6 +87,7 @@ jobs:
         run: |
           set -euo pipefail
           npm ci
+          npm run build:types --workspace=server
           npm run lint
           npm run typescript:check-types
           npm run test:tooling

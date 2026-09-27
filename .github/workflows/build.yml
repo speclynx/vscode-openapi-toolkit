@@ -66,6 +66,10 @@ jobs:
           npm install --package-lock-only --ignore-scripts
           git diff --exit-code package-lock.json
 
+      # The consumer fixture resolves the package exports to generated declarations.
+      - name: Generate server declarations
+        run: npm run build:types --workspace=server
+
       - name: Lint and type check
         run: npm run lint && npm run typescript:check-types
 
