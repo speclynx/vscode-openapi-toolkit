@@ -115,7 +115,7 @@
     "@babel/cli": "^7.28.6",
     "@babel/plugin-transform-runtime": "^7.29.0",
     "@babel/preset-env": "^7.29.5",
-    "@babel/preset-typescript": "^7.28.5",
+    "@babel/preset-typescript": "^8.0.1",
     "@electron/rebuild": "^4.0.4",
     "@eslint/js": "^10.0.1",
     "@types/mocha": "^10.0.10",
