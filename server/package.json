@@ -112,7 +112,7 @@
   "devDependencies": {
     "@speclynx/apidom-core": "^5.1.0",
     "@speclynx/api-languageservice": "^2.13.1",
-    "@speclynx/apidom-reference": "^5.1.0",
+    "@speclynx/apidom-reference": "^5.2.6",
     "@stoplight/spectral-core": "^1.23.1",
     "@stoplight/spectral-functions": "^1.10.5",
     "@stoplight/spectral-ruleset-bundler": "^1.7.0",
