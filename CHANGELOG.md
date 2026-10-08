@@ -20,6 +20,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Security
 
+- use runtime locations for bundled parser initialization and reject embedded build paths
 - update `brace-expansion` to patched releases and `serialize-javascript` to 7.1.2
 - remove the vulnerable `braces` dependency chain by dropping unused `@babel/cli` and upgrading `@vscode/vsce` to 4.0.0
 
