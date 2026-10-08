@@ -39,6 +39,11 @@ Restore the manifest before committing or packaging. **Attach to Server** connec
 the server debugger. For **Launch Browser Client**, build the production browser
 bundles first with `npm run build:prod:browser`.
 
+Production builds reject embedded checkout paths and literal local file URLs in
+emitted assets. The shared configuration adapts `web-tree-sitter` runtime URLs for
+Node and browser workers; dependency changes to those expressions fail the build
+until reviewed. Keep the runtime-location tests passing when changing bundling.
+
 ## Verify changes
 
 Generate the server declarations before typed lint and type checks. The standalone

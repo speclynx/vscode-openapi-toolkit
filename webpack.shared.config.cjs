@@ -1,8 +1,27 @@
 'use strict';
 
+const path = require('node:path');
 const merge = require('merge-options');
+const { BuildPathGuardPlugin } = require('./config/webpack-build-paths.cjs');
 const { optimize } = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
+
+function treeSitterRuntimeRule(runtime) {
+  return {
+    test: /node_modules[/\\]web-tree-sitter[/\\]web-tree-sitter\.js$/,
+    use: {
+      loader: path.join(__dirname, 'config/tree-sitter-runtime-loader.cjs'),
+      options: { runtime },
+    },
+  };
+}
+
+function withBuildPathGuard(defaults, overrides) {
+  const config = merge(defaults, overrides);
+  // Append after merging so target-specific plugin lists cannot drop the guard.
+  config.plugins = [...(config.plugins || []), new BuildPathGuardPlugin(__dirname)];
+  return config;
+}
 
 function withNodeDefaults(extConfig) {
   const defaultConfig = {
@@ -10,6 +29,7 @@ function withNodeDefaults(extConfig) {
     target: 'node', // build for Node/Electron
     node: {
       __dirname: false, // leave the __dirname-behaviour intact
+      __filename: false, // tree-sitter must use the installed bundle filename
     },
     output: {
       libraryTarget: 'commonjs', // VS Code expects CommonJS
@@ -40,6 +60,7 @@ function withNodeDefaults(extConfig) {
     },
     module: {
       rules: [
+        treeSitterRuntimeRule('node'),
         {
           test: /\.wasm$/,
           type: 'javascript/auto',
@@ -74,7 +95,7 @@ function withNodeDefaults(extConfig) {
     plugins: nodePlugins(extConfig.context),
   };
 
-  return merge(defaultConfig, extConfig);
+  return withBuildPathGuard(defaultConfig, extConfig);
 }
 
 function nodePlugins() {
@@ -104,6 +125,7 @@ function withBrowserDefaults(extConfig) {
     },
     module: {
       rules: [
+        treeSitterRuntimeRule('browser'),
         {
           test: /\.wasm$/,
           type: 'javascript/auto',
@@ -151,7 +173,7 @@ function withBrowserDefaults(extConfig) {
     plugins: browserPlugins(extConfig.context),
   };
 
-  return merge(defaultConfig, extConfig);
+  return withBuildPathGuard(defaultConfig, extConfig);
 }
 
 function browserPlugins() {
