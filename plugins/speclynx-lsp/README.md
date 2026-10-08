@@ -6,15 +6,18 @@ Powered by [ApiDOM](https://github.com/speclynx/apidom). Inside Claude Code it a
 
 ## Install
 
+Installation requires a verified release entry for `speclynx-lsp` in the
+[marketplace catalog](https://github.com/speclynx/vscode-openapi-toolkit/blob/main/.claude-plugin/marketplace.json).
+Once that entry is present, run:
+
 ```
 /plugin marketplace add speclynx/vscode-openapi-toolkit
 /plugin install speclynx-lsp@speclynx
 ```
 
-> Available after the first npm release and verified catalog promotion. The bootstrap
-> marketplace is empty. For development, build and retain a server tarball, run
-> `node scripts/install-plugin-server.mjs --tarball /absolute/path/to/server.tgz`, then
-> start `claude --plugin-dir ./plugins/speclynx-lsp` from this checkout.
+For local development, build and retain a server tarball, run
+`node scripts/install-plugin-server.mjs --tarball /absolute/path/to/server.tgz`, then
+start `claude --plugin-dir ./plugins/speclynx-lsp` from this checkout.
 
 The language server is a dependency of this plugin, and Claude Code installs it: a plugin
 that ships a `package.json` and a lockfile has `npm ci --ignore-scripts` run for it when

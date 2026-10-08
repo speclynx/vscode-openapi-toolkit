@@ -3,9 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# Unreleased
-
-Planned for 1.6.0. This version has not been released.
+# 1.6.0 (2026-10-08)
 
 ### Features
 
@@ -18,6 +16,12 @@ Planned for 1.6.0. This version has not been released.
 - keep validating when a Spectral ruleset fails to load
 - ignore workspace rules whose pattern cannot be evaluated in bounded time
 - describe the rules file names the extension actually looks for
+- generate server declarations before CI lint and type checks
+
+### Security
+
+- update `brace-expansion` to patched releases and `serialize-javascript` to 7.1.2
+- remove the vulnerable `braces` dependency chain by dropping unused `@babel/cli` and upgrading `@vscode/vsce` to 4.0.0
 
 ### Performance Improvements
 

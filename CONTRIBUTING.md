@@ -73,7 +73,7 @@ node server/dist/node/cli.js --stdio
 ```
 
 For a local Claude Code session, install a retained server archive into the development
-plugin, then load that directory directly (the bootstrap marketplace is empty):
+plugin, then load that directory directly:
 
 ```sh
 node scripts/install-plugin-server.mjs --tarball /absolute/path/to/server.tgz

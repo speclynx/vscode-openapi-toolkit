@@ -1,7 +1,7 @@
 {
   "name": "@speclynx/api-language-server",
   "description": "API language server (LSP) providing validation, linting, completion, hover and navigation for OpenAPI/Swagger 2.0, OpenAPI 3.0 and 3.1 documents in JSON and YAML.",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "publisher": "SpecLynx",
   "author": "SpecLynx",
   "license": "Apache-2.0",

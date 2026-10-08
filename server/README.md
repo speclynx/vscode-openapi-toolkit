@@ -16,15 +16,14 @@ The package installs a `speclynx-lsp` executable. It can also be run without ins
 npx @speclynx/api-language-server
 ```
 
-The server ships as a single bundled file with no dependencies, so installing it fetches
-one package rather than the few hundred it is built from, and what runs is exactly what
-was tested. Both commands require the package to be on npm; before the first release it is
-not, and building it from a checkout produces the same artifact:
+The server ships as a single bundled file with no runtime dependencies, so installing it
+fetches one package rather than the few hundred it is built from. Published archives are
+tested before release. For local development, build the server from a repository checkout:
 
 ```bash
 npm ci
 npm --workspace=server run build:standalone
-node server/dist/node/cli.js         # the same executable the package installs
+node server/dist/node/cli.js
 ```
 
 ## Running the server
