@@ -53,7 +53,7 @@
     "@speclynx/apidom-parser-adapter-openapi-yaml-3-0": "^5.1.0",
     "@speclynx/apidom-parser-adapter-openapi-yaml-3-1": "^5.1.0",
     "@speclynx/apidom-parser-adapter-yaml-1-2": "^5.1.0",
-    "@speclynx/apidom-reference": "^5.1.0",
+    "@speclynx/apidom-reference": "^5.2.6",
     "@types/lodash.debounce": "^4.0.9",
     "lodash.debounce": "^4.0.8",
     "node-fetch": "^3.3.2",
