@@ -22,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/speclynx/vscode-openapi-toolkit/issues"
   },
-  "version": "1.5.3",
+  "version": "1.6.0",
   "private": true,
   "engines": {
     "vscode": "^1.75.0",

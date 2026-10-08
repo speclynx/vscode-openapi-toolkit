@@ -2,7 +2,7 @@
   "name": "vscode-openapi-toolkit",
   "displayName": "OpenAPI Toolkit",
   "description": "OpenAPI editing, commands, validation, linting & live preview in VSCode",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "private": true,
   "icon": "./images/icon.png",
   "homepage": "https://speclynx.com",

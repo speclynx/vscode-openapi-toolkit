@@ -127,12 +127,13 @@ Licensed under the **Apache License 2.0**. See [LICENSE](LICENSE).
 The same language features are available to other editors through the standalone
 [`@speclynx/api-language-server`](./server/README.md). Its `speclynx-lsp --stdio`
 command speaks the Language Server Protocol and does not require VS Code.
-The first npm publication is planned for 1.6.0; until then use the
-[local build instructions](./CONTRIBUTING.md).
+See the server README for npm installation and
+[CONTRIBUTING.md](./CONTRIBUTING.md) for local builds.
 
 The [SpecLynx LSP plugin](./plugins/speclynx-lsp/README.md) integrates the server with
-Claude Code. The marketplace catalog is initially empty. After the first server release
-and plugin verification, install it with:
+Claude Code. Installation requires a verified release entry for `speclynx-lsp` in the
+[marketplace catalog](https://github.com/speclynx/vscode-openapi-toolkit/blob/main/.claude-plugin/marketplace.json).
+Once that entry is present, install it with:
 
 ```text
 /plugin marketplace add speclynx/vscode-openapi-toolkit

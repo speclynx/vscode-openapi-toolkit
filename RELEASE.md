@@ -11,15 +11,17 @@ a release is being verified.
 2. Keep upcoming changes under `# Unreleased` while developing. When the release is ready,
    finalize that section as `# X.Y.Z (YYYY-MM-DD)` with the confirmed release date and
    nonempty notes. A tentative schedule is not a completed release date.
-3. Run `npm run release:version X.Y.Z` and review the changed manifests and lockfile.
+3. Run `npm run release:version -- X.Y.Z` and review the changed manifests and lockfile.
 4. Open and merge a pull request after `build`, `publication-guardrails`,
    `dependency-audit`, and `codeql` pass. Record browser worker startup, diagnostics,
    completion, JSON/YAML conversions and both preview renderers against the candidate.
 5. Tag the merged source commit as `vX.Y.Z` and push that one tag. Never move an
    existing release tag. Release tags and payload refs must already be protected.
 
-The first source publication deliberately has an empty marketplace catalog. The first
-server publication is planned for 1.6.0. Historical release tags remain unchanged.
+Keep the marketplace catalog empty until the first server publication and plugin runtime
+verification have passed and the payload is approved for promotion. Do not create a plugin
+lockfile during version preparation: `prepare-plugin` resolves the published package later.
+Historical release tags remain unchanged.
 
 Version preparation, release-tag validation and release-note extraction share the same
 changelog check: exactly one heading for the requested version, a real ISO calendar date,
@@ -40,8 +42,10 @@ self-review prevented and administrator bypass disabled. Restrict deployments to
 release tags with a tag rule matching `v*`. Naming an environment in YAML does not
 configure these controls.
 
-Give npm's trusted publisher the exact repository `speclynx/vscode-openapi-toolkit`,
-workflow filename `release.yml`, environment `release`, and permission to publish.
+For an existing npm package, configure its trusted publisher with the exact repository
+`speclynx/vscode-openapi-toolkit`, workflow filename `release.yml`, environment `release`,
+and permission for direct `npm publish`. If the package does not exist yet, follow
+[First npm publication](#first-npm-publication) before configuring trust.
 The hosted runner uses the Node version in `.nvmrc`; trusted publication requires
 Node 22.14 or later and npm 11.5.1 or later. Only `publish-npm` receives
 `id-token: write`; no `NPM_TOKEN` is used. See the
@@ -110,17 +114,30 @@ whether an original archive was lost. See
 ## First npm publication
 
 A trusted publisher cannot be configured for a package name that does not yet exist.
-For the first version, the designated npm maintainer uses interactive 2FA to publish
-exactly the downloaded and digest-verified archive:
+For the first version, let the tag's `preflight` and `artifacts` jobs complete, then
+leave `publish-npm` waiting for release-environment approval. Download the deliverables
+and record by their recorded artifact IDs, verify their digests, retain a private recovery
+copy, and complete confidentiality and attribution review of those exact files.
+
+The designated npm maintainer then uses interactive 2FA to publish exactly that archive:
 
 ```sh
 npm publish ./speclynx-api-language-server-1.6.0.tgz --access public --provenance=false
 ```
 
-Do not build locally or use `npm publish --workspace=server`. Configure the trusted
-publisher for the newly created package, then rerun the failed publish job. It will
-verify and skip the identical existing version. The next patch release verifies the
-OIDC/provenance path; a dry run cannot prove that authentication works.
+Do not build locally or use `npm publish --workspace=server`. Verify the registry's
+`gitHead`, SHA-512 SRI and downloaded SHA-256 against the retained record, and test
+installation of the published version. Then approve the waiting `publish-npm` job
+(or rerun it if a previous attempt failed). It verifies and skips the identical version
+and allows the GitHub release jobs to continue; an intentional failed attempt is unnecessary.
+
+This manual bootstrap has no npm provenance, and the subsequent skip does not exercise
+OIDC. The next genuine npm publication must verify the OIDC/provenance path; a dry run
+cannot prove authentication. Configure the package's trusted publisher shortly before
+that publication using the repository/workflow/environment tuple above. A new configuration
+expires unless its first successful publish occurs within two days; delete and recreate
+an expired configuration. Record this outstanding verification after the bootstrap release.
+See [npm's configuration expiry rules](https://docs.npmjs.com/trusted-publishers/#trusted-publisher-configuration-expiry).
 
 ## Plugin payload and runtime verification
 
@@ -155,8 +172,8 @@ verify LSP initialization and diagnostics. Test updating a cached predecessor as
 as a fresh install. For the first release, seed a local predecessor fixture and record
 that setup privately. Record Node, npm and Claude versions and installation time; an
 installation exceeding Claude's 60-second limit does not pass. See the official
-[plugin package dependency behavior](https://code.claude.com/docs/en/plugins-reference#nodejs-package-dependencies)
-and [marketplace sources](https://code.claude.com/docs/en/plugin-marketplaces).
+[plugin package dependency behavior](https://code.claude.com/docs/en/plugins/loading#nodejs-package-dependencies)
+and [plugin sources](https://code.claude.com/docs/en/plugins/marketplace-reference#plugin-sources).
 
 Prepare a public-safe `plugin-runtime-evidence.json` with exactly these fields:
 
