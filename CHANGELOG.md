@@ -17,6 +17,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - ignore workspace rules whose pattern cannot be evaluated in bounded time
 - describe the rules file names the extension actually looks for
 - generate server declarations before CI lint and type checks
+- scope release secret-scan approvals to extracted files and archive metadata
 
 ### Security
 

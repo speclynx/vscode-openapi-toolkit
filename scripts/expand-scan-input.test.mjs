@@ -48,32 +48,83 @@ with tempfile.TemporaryDirectory() as root:
   assert.doesNotThrow(() => execFileSync('python3', ['-c', script], { stdio: 'pipe' }));
 });
 
-test('archive coverage includes ZIP preambles and trailers and decoded TAR headers and padding', () => {
-  const script = `
-import importlib.util,tempfile,pathlib,zipfile,tarfile,io,gzip,json
+test('archive scanning retains members and structured metadata without whole-container inputs', () => {
+  const script = String.raw`
+import importlib.util,tempfile,pathlib,zipfile,tarfile,io,gzip,json,struct
 spec=importlib.util.spec_from_file_location('scan','scripts/expand-scan-input.py');scan=importlib.util.module_from_spec(spec);spec.loader.exec_module(scan)
 with tempfile.TemporaryDirectory() as root:
  d=pathlib.Path(root);zipped=io.BytesIO()
- with zipfile.ZipFile(zipped,'w') as z:z.writestr('file.txt','zip payload')
- raw=b'ZIP preamble fixture\\n'+zipped.getvalue()+b'\\nZIP trailer fixture'
+ with zipfile.ZipFile(zipped,'w') as z:
+  info=zipfile.ZipInfo('file.txt');info.comment=b'member comment fixture'
+  extra=b'extra field fixture';info.extra=struct.pack('<HH',0xCAFE,len(extra))+extra
+  z.writestr(info,'zip payload');z.comment=b'archive comment fixture'
+ raw=b'ZIP preamble fixture\n'+zipped.getvalue()+b'\nZIP trailer fixture'
  scanner=scan.Expander(d);scanner.add('fixture.zip',raw)
- assert (d/'fixture.zip/__archive-container-bytes__').read_bytes().endswith(raw)
  assert (d/'fixture.zip/file.txt').read_bytes().endswith(b'zip payload')
+ assert (d/'fixture.zip/archive-comment').read_bytes().endswith(b'archive comment fixture')
+ assert (d/'fixture.zip/file.txt-comment').read_bytes().endswith(b'member comment fixture')
+ assert (d/'fixture.zip/file.txt-extra').read_bytes().endswith(info.extra)
  tarred=io.BytesIO()
- with tarfile.open(fileobj=tarred,mode='w',format=tarfile.USTAR_FORMAT) as t:
-  info=tarfile.TarInfo('file.txt');info.uname='header-owner-fixture';info.gname='header-group-fixture';info.size=11;t.addfile(info,io.BytesIO(b'tar payload'))
+ with tarfile.open(fileobj=tarred,mode='w',format=tarfile.PAX_FORMAT) as t:
+  info=tarfile.TarInfo('file.txt');info.uname='header-owner-fixture';info.gname='header-group-fixture';info.size=11;info.pax_headers={'comment':'extended header fixture'};t.addfile(info,io.BytesIO(b'tar payload'))
+  info=tarfile.TarInfo('nested.zip');info.size=len(zipped.getvalue());t.addfile(info,io.BytesIO(zipped.getvalue()))
  decoded=tarred.getvalue()+b'TAR padding fixture'
  scanner.add('fixture.tgz',gzip.compress(decoded))
- assert (d/'fixture.tgz/__decoded-tar-bytes__').read_bytes().endswith(decoded)
  assert (d/'fixture.tgz/file.txt').read_bytes().endswith(b'tar payload')
- metadata=(d/'fixture.tgz/__archive-metadata__.json').read_bytes().split(b'\\n',1)[1]
+ assert (d/'fixture.tgz/nested.zip/file.txt').read_bytes().endswith(b'zip payload')
+ assert b'extended header fixture' in (d/'fixture.tgz/file.txt-pax').read_bytes()
+ metadata=(d/'fixture.tgz/__archive-metadata__.json').read_bytes().split(b'\n',1)[1]
  assert json.loads(metadata)[0]['uname']=='header-owner-fixture'
+ assert json.loads(metadata)[0]['gname']=='header-group-fixture'
+ bodies=[p.read_bytes() for p in d.rglob('*') if p.is_file()]
+ for omitted in [b'ZIP preamble fixture',b'ZIP trailer fixture',b'TAR padding fixture']:
+  assert not any(omitted in body for body in bodies)
  for member in scanner.members:
-  assert (d/member['pathProjection']).is_file() and (d/member['contentProjection']).is_file()
+  assert '__archive-container-bytes__' not in member['path'] and '__decoded-tar-bytes__' not in member['path']
+  if 'pathProjection' in member:
+   assert (d/member['pathProjection']).is_file() and (d/member['contentProjection']).is_file()
+  else:
+   assert member['path'] in ['fixture.zip','fixture.tgz','fixture.tgz/nested.zip']
  # A small compressed container must not bypass the decoded size limit.
  scan.MAX_FILE=1024
  try:scan.Expander(d/'oversize').add('oversize.tgz',gzip.compress(decoded));raise AssertionError('accepted oversized decoded TAR')
  except ValueError:pass
+`;
+  assert.doesNotThrow(() => execFileSync('python3', ['-c', script], { stdio: 'pipe' }));
+});
+
+test('changing npm gitHead preserves member approvals while changed member bytes need review', () => {
+  const script = String.raw`
+import importlib.util,tempfile,pathlib,tarfile,io,json,hashlib
+def module(name,file):
+ spec=importlib.util.spec_from_file_location(name,file);result=importlib.util.module_from_spec(spec);spec.loader.exec_module(result);return result
+scan=module('scan','scripts/expand-scan-input.py');review=module('review','scripts/secret-scan-dispositions.py')
+def archive(head,code):
+ stream=io.BytesIO()
+ with tarfile.open(fileobj=stream,mode='w:gz') as t:
+  for name,data in [('package/package.json',json.dumps({'gitHead':head}).encode()),('package/server.js',code)]:
+   info=tarfile.TarInfo(name);info.size=len(data);t.addfile(info,io.BytesIO(data))
+ return stream.getvalue()
+with tempfile.TemporaryDirectory() as root:
+ inputs=[]
+ for label,head,code in [('before','a'*40,b'ordinary fixture'),('after','b'*40,b'ordinary fixture'),('changed','b'*40,b'different fixture')]:
+  destination=pathlib.Path(root)/label;scanner=scan.Expander(destination)
+  scanner.add('server.tgz',archive(head,code));inputs.append((destination,scanner))
+ before,after,changed=inputs
+ def member(item,suffix):return next(m for m in item[1].members if m['path']=='server.tgz/'+suffix)
+ first=member(before,'package/server.js');second=member(after,'package/server.js')
+ assert before[1].members[0]['sha256']!=after[1].members[0]['sha256']
+ assert member(before,'package/package.json')['sha256']!=member(after,'package/package.json')['sha256']
+ assert first['sha256']==second['sha256']
+ assert {m['path']:m['sha256'] for m in before[1].members if 'pathProjection' in m and not m['path'].endswith('/package.json')}=={m['path']:m['sha256'] for m in after[1].members if 'pathProjection' in m and not m['path'].endswith('/package.json')}
+ # A synthetic detector result exercises the production matcher; no secret waiver is added.
+ finding={'RuleID':'fixture-rule','StartLine':2,'EndLine':2,'StartColumn':1,'EndColumn':16,'Match':'fixture=REDACTED','Tags':[]}
+ entry={'contentSha256':first['sha256'],'ruleId':finding['RuleID'],'startLine':2,'endLine':2,'startColumn':1,'endColumn':16,'redactedMatchSha256':hashlib.sha256(finding['Match'].encode()).hexdigest(),'tags':[],'decision':'non-secret','reviewer':'synthetic reviewer','reason':'synthetic fixture'}
+ manifest={'schemaVersion':1,'configSha256':'c'*64,'findings':[entry]}
+ for item,expected in [(before,1),(after,1),(changed,0)]:
+  destination,scanner=item;location=destination/member(item,'package/server.js')['pathProjection']
+  accepted,unresolved=review.partition_findings([{**finding,'File':str(location)}],destination,scanner.members,manifest,'c'*64)
+  assert len(accepted)==expected and len(unresolved)==1-expected
 `;
   assert.doesNotThrow(() => execFileSync('python3', ['-c', script], { stdio: 'pipe' }));
 });

@@ -17,4 +17,4 @@ python3 scripts/expand-scan-input.py "$source_dir" "$scan_evidence/expanded" "$s
 python3 scripts/run-secret-scan.py "$scan_tools/gitleaks" "$scan_evidence/expanded" \
   "$scan_evidence/coverage.json" "$scan_evidence" config/secret-scan-dispositions.json
 # Reports and extracted files intentionally never become workflow artifacts.
-echo 'Pinned secret scan passed. Confidentiality and binary-media review remain separate release gates.'
+echo 'Pinned file and archive-metadata secret scan passed. Confidentiality and binary-media review remain separate release gates.'

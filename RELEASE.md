@@ -61,7 +61,22 @@ Verify repository artifact retention permits 90 days. Environment reviewers must
 inspect the exact source, artifacts, runtime evidence and requested operation before
 approval. Workflow checks do not replace confidentiality or attribution review.
 
-The strict secret scan may flag ordinary dependency code. Review candidates privately
+The release secret scan runs after packaging and before uploading new retained npm/VSIX
+artifacts. Plugin preparation uses the same scan on payload files and commit metadata
+before pushing the payload ref. Retried releases that restore retained artifacts verify
+their recorded identities instead of rebuilding or rescanning them.
+
+The scan covers file contents, recursively extracted archive members and structured
+archive metadata, including member names, ownership fields, comments, ZIP extra fields
+and TAR extended headers. It rejects private/unsafe paths, unsupported member types,
+encrypted ZIP entries and unreadable archives, and enforces size and nesting limits.
+It does not also scan whole compressed containers or raw decoded TAR streams: preambles,
+padding, unused header bytes and trailing data outside extracted members/metadata are
+outside its scope. Archive hashes and source-commit checks remain unchanged. Reviewed
+findings bind the individual file or metadata input, so changing package provenance does
+not invalidate reviews of unchanged bundled code through a whole-container hash.
+
+The secret scan may flag ordinary dependency code. Review candidates privately
 before tagging. `config/secret-scan-dispositions.json` accepts individual verified
 non-secret findings only: exact input SHA-256, scanner configuration SHA-256, rule,
 location, redacted-match SHA-256, decoding tags, reviewer and reason. It contains no
