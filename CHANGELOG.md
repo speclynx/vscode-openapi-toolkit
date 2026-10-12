@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# 1.6.0 (2026-10-08)
+# 1.6.0 (2026-10-13)
 
 ### Features
 
