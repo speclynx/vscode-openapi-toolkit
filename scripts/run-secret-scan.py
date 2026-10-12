@@ -65,4 +65,4 @@ if dispositions:
         sys.exit('Invalid reviewed dispositions; nothing was cleared.')
 if unresolved or (status == 1 and not findings):
     sys.exit('Secret candidates require private review; nothing was cleared.')
-print(f'Secret scan passed with complete content coverage for {len(expected)} projections.')
+print(f'Secret scan passed for all {len(expected)} file and archive-metadata projections.')

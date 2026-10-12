@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Expand publication archives without executing them; fail on incomplete coverage."""
+"""Expand files and structured archive metadata without executing archive contents."""
 import hashlib, io, json, os, re, stat, sys, tarfile, zipfile
 from pathlib import Path, PurePosixPath
 
@@ -62,9 +62,8 @@ class Expander:
             except (tarfile.TarError, EOFError, OSError): pass
         if archive:
             if depth >= MAX_DEPTH: raise ValueError('Archive nesting exceeds reviewed limit')
-            # Extraction alone loses preambles, trailers and unused header data.
-            # Project the complete original container as well as its members.
-            self.project(member, name + '/__archive-container-bytes__', data)
+            # Scan members and structured metadata, not duplicate container bytes.
+            # Preambles, padding, unused header bytes and trailers are outside this scope.
             if archive == 'zip':
                 with zipfile.ZipFile(io.BytesIO(data)) as opened:
                     metadata = []
@@ -84,16 +83,10 @@ class Expander:
                     self.add(name + '/__archive-metadata__.json', json.dumps(metadata).encode(), depth + 1)
             else:
                 with tarfile.open(fileobj=io.BytesIO(data)) as opened:
-                    # A compressed TAR can hide data after its end-of-archive
-                    # marker. Read the whole decoded stream with a strict bound,
-                    # without recursively treating this scan projection as a TAR.
+                    # Bound decompression even though the raw TAR is not a scan input.
                     opened.fileobj.seek(0)
-                    decoded = opened.fileobj.read(MAX_FILE + 1)
-                    if len(decoded) > MAX_FILE: raise ValueError('Decoded TAR container exceeds scan limit')
-                    if decoded != data:
-                        decoded_name = name + '/__decoded-tar-bytes__'
-                        decoded_member = self.record(decoded_name, decoded, depth + 1)
-                        self.project(decoded_member, decoded_name, decoded)
+                    if len(opened.fileobj.read(MAX_FILE + 1)) > MAX_FILE:
+                        raise ValueError('Decoded TAR container exceeds scan limit')
                     metadata = []
                     for entry in opened:
                         safe_name(entry.name)
@@ -129,8 +122,8 @@ if __name__ == '__main__':
     os.umask(0o077)
     try:
         scanner = expand(Path(sys.argv[1]), Path(sys.argv[2]))
-        Path(sys.argv[3]).write_text(json.dumps({'members': scanner.members, 'expandedBytes': scanner.total}, indent=2)+'\n')
-        print(f'Coverage: {len(scanner.members)} members, {scanner.total} expanded bytes; no skipped archives.')
+        Path(sys.argv[3]).write_text(json.dumps({'scope': 'files-and-archive-metadata', 'members': scanner.members, 'expandedBytes': scanner.total}, indent=2)+'\n')
+        print(f'Expanded {len(scanner.members)} records for file and archive-metadata scanning.')
     except Exception as error:
         print(f'Publication scan stopped: {type(error).__name__}. Inspect inputs privately; no clearance granted.', file=sys.stderr)
         sys.exit(1)
