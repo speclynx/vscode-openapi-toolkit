@@ -76,9 +76,11 @@ outside its scope. Archive hashes and source-commit checks remain unchanged. Rev
 findings bind the individual file or metadata input, so changing package provenance does
 not invalidate reviews of unchanged bundled code through a whole-container hash.
 
-The secret scan may flag ordinary dependency code. Review candidates privately
-before tagging. `config/secret-scan-dispositions.json` accepts individual verified
-non-secret findings only: exact input SHA-256, scanner configuration SHA-256, rule,
+The scan keeps the specific credential and private-key rules. The broad
+`generic-api-key` heuristic is disabled because it matches ordinary bundled code and
+examples; unknown/custom credential formats lose that generic detection. New findings
+from the remaining rules still stop the release and require review.
+`config/secret-scan-dispositions.json` accepts individual verified non-secret findings only: exact input SHA-256, scanner configuration SHA-256, rule,
 location, redacted-match SHA-256, decoding tags, reviewer and reason. It contains no
 raw candidate values. Changed bytes, new findings or a changed scanner configuration
 require another review. There are no path-wide or package-wide exemptions, and an
