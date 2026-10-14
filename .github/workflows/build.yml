@@ -92,10 +92,11 @@ jobs:
         run: xvfb-run -a npm run test
 
       # Proves the npm package still resolves, builds through `prepack`, and
-      # ships what `files` claims. Runs after the build, because `prepack` writes
-      # into the same server/dist the extension bundles live in.
-      - name: Dry-run the npm publish
-        run: npm publish --dry-run --workspace=server
+      # ships what `files` claims, including after this version is published.
+      # Runs after the build, because `prepack` writes into the same server/dist
+      # the extension bundles live in.
+      - name: Dry-run the npm package
+        run: npm pack --dry-run --workspace=server
 
       # Exercises vsce's `files` include-pattern gate and its secretlint scan,
       # neither of which anything else touches before release day.
