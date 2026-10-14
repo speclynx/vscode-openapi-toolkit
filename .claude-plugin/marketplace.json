@@ -5,5 +5,17 @@
     "email": "info@speclynx.com"
   },
   "description": "API tooling for coding agents, powered by ApiDOM.",
-  "plugins": []
+  "plugins": [
+    {
+      "name": "speclynx-lsp",
+      "description": "API language server for OpenAPI documents.",
+      "category": "development",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/speclynx/vscode-openapi-toolkit.git",
+        "path": "plugins/speclynx-lsp",
+        "sha": "2494ea02203f1639ac4e8762ffb5d3c71d339a9c"
+      }
+    }
+  ]
 }
