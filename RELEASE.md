@@ -1,9 +1,29 @@
 # Release instructions
 
-One source tag releases the VS Code extension, `@speclynx/api-language-server`, and
-its Claude Code plugin. The development manifests share a version. The public plugin
-catalog serves a separately retained payload commit, so development can advance while
-a release is being verified.
+The extension, `@speclynx/api-language-server` and Claude plugin share a version.
+Pushing a release tag starts `release.yml`: it builds and retains the artifacts,
+publishes npm and the GitHub release after approval, and prepares an immutable plugin
+payload. Updating the public Claude catalog is a separate step after runtime testing.
+A skipped `promote-plugin` job on the initial tag run is expected.
+
+## Routine release sequence
+
+The npm package and plugin catalog already exist. Use this sequence for the next real
+release; the first npm bootstrap and 1.6.0 icon correction below are historical exceptions.
+
+| Step | Executor | Result |
+| --- | --- | --- |
+| Prepare and merge source | Maintainer and PR reviewer | Confirm version/date, update manifests and notes, pass normal CI |
+| Verify npm trust and release authorization | npm maintainer and release operator | Exact repository/workflow/environment trust and working review gates |
+| Push one new release tag | Release operator | CI builds/tests/scans once and retains exact TGZ, VSIX and record |
+| Approve publishing jobs | Release reviewer | CI publishes npm/GitHub and prepares the frozen Claude payload |
+| Test and promote Claude payload | Runtime tester and release reviewer | Fresh install/cached upgrade evidence, then dispatch promotion from the same tag |
+| Distribute the retained VSIX | Publisher/operator | Website uploads to both marketplaces, then the editor update |
+| Verify and record | Release operator | Public versions/bytes, catalog/main CI, deployment and recovery copy |
+
+Existing workflows automate builds, checks, npm/GitHub publication and plugin preparation/
+promotion. Marketplace uploads and the editor update remain operator actions; no new
+publishing workflow or marketplace token is required for the website upload route.
 
 ## Prepare the source
 
@@ -18,10 +38,17 @@ a release is being verified.
 5. Tag the merged source commit as `vX.Y.Z` and push that one tag. Never move an
    existing release tag. Release tags and payload refs must already be protected.
 
-Keep the marketplace catalog empty until the first server publication and plugin runtime
-verification have passed and the payload is approved for promotion. Do not create a plugin
-lockfile during version preparation: `prepare-plugin` resolves the published package later.
-Historical release tags remain unchanged.
+Keep the catalog serving the currently tested payload while preparing the next release;
+do not empty it or advance its pin during version preparation. Do not create a plugin
+lockfile at this stage: `prepare-plugin` resolves the newly published package later.
+Historical release tags remain unchanged. Before tagging, also run:
+
+```sh
+npm run release:check
+GITHUB_REF_NAME=vX.Y.Z npm run release:check -- --tag
+```
+
+Replace `X.Y.Z` with the prepared version. These checks do not create or publish a tag.
 
 Version preparation, release-tag validation and release-note extraction share the same
 changelog check: exactly one heading for the requested version, a real ISO calendar date,
@@ -35,7 +62,7 @@ If the schedule changes before tagging, update the date before freezing the sour
 building its artifacts. After a tag or package has been published, follow the retained-artifact
 recovery rules below; do not move the tag or rebuild a published version to change its date.
 
-## Configure authorization before the first tag
+## Verify release authorization
 
 Configure the `release` environment with both maintainers eligible to review,
 self-review prevented and administrator bypass disabled. Restrict deployments to
@@ -45,11 +72,17 @@ configure these controls.
 For an existing npm package, configure its trusted publisher with the exact repository
 `speclynx/vscode-openapi-toolkit`, workflow filename `release.yml`, environment `release`,
 and permission for direct `npm publish`. If the package does not exist yet, follow
-[First npm publication](#first-npm-publication) before configuring trust.
+[Historical first npm publication](#historical-first-npm-publication) before configuring trust.
 The hosted runner uses the Node version in `.nvmrc`; trusted publication requires
 Node 22.14 or later and npm 11.5.1 or later. Only `publish-npm` receives
 `id-token: write`; no `NPM_TOKEN` is used. See the
 [npm trusted publishing documentation](https://docs.npmjs.com/trusted-publishers/).
+
+Configure or recreate trust close to the next real publication: a new configuration
+expires unless its first successful publish occurs within two days. The 1.6.0 manual
+bootstrap and subsequent identical-version skip did not exercise OIDC. The next genuine
+npm release must verify OIDC publication and provenance; do not cut a dummy release to
+exercise authentication. An expired configuration must be deleted and recreated.
 
 `RELEASE_PAT` is an environment secret used only for plugin payload/catalog writes.
 Use a fine-grained token restricted to this repository, with the needed contents
@@ -128,7 +161,10 @@ retry also requires explicit recovery review, since an absent record cannot prov
 whether an original archive was lost. See
 [GitHub artifact retention](https://docs.github.com/en/actions/tutorials/store-and-share-data).
 
-## First npm publication
+## Historical first npm publication
+
+The package already exists after the 1.6.0 bootstrap. Do not repeat this manual
+publication for routine releases; the following describes the one-time bootstrap.
 
 A trusted publisher cannot be configured for a package name that does not yet exist.
 For the first version, let the tag's `preflight` and `artifacts` jobs complete, then
@@ -219,6 +255,16 @@ upload this public-safe evidence file as a release asset, calculate its SHA-256,
 run `release.yml` manually **from the same release tag**, with `promote_plugin` enabled
 and `runtime_evidence_sha256` set to that digest. Environment approval is still required.
 
+For example, after replacing the version and evidence digest:
+
+```sh
+gh workflow run release.yml --repo speclynx/vscode-openapi-toolkit \
+  --ref vX.Y.Z -f promote_plugin=true -f runtime_evidence_sha256=EVIDENCE_SHA256
+```
+
+For a later release, use the currently published payload as the tested predecessor;
+the synthetic predecessor fixture was only needed for the first release.
+
 Promotion rechecks the registry, evidence digest, payload identity and tested predecessor.
 It compares versions against the manifest at the catalog's existing pin, preserving other
 entries and unrelated development changes. Concurrent pushes trigger a bounded reread/retry.
@@ -234,6 +280,21 @@ ship a corrected patch version for cached clients. Changing only a SHA does not 
 Use the **retained VSIX from the GitHub release** for the VS Code Marketplace, Open VSX
 and `speclynx-editor`. Rebuilding would create an untested artifact identity even though
 obfuscation has been removed. These uploads and the announcement remain maintainer actions.
+
+For the marketplaces, upload the existing archive through the publisher websites.
+The internal manifest provides publisher/name/version; the local filename does not
+change them. Open VSX requires the publisher agreement and the applicable namespace
+ownership. Let registry processing finish, then verify the public version and downloaded
+archive, plus README/changelog listing content. Website uploads require no CLI PAT.
+See [VS Code publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
+and [Open VSX publishing](https://github.com/EclipseFdn/open-vsx.org/wiki/Publishing-Extensions).
+
+The browser editor bundles its own archive; marketplace publication does not update it.
+In `speclynx/speclynx-editor`, replace `extensions/speclynx-openapi-toolkit.vsix` with the
+same retained file, build and test the editor, and open a reviewed PR. Its existing main
+push workflow deploys to GitHub Pages after merge. Verify that deployment before marking
+editor distribution complete. Do not rebuild the extension or reset user storage merely
+to replace the bundled archive.
 
 ### 1.6.0 icon-only distribution correction
 
