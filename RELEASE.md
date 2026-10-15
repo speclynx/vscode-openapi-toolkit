@@ -234,3 +234,26 @@ ship a corrected patch version for cached clients. Changing only a SHA does not 
 Use the **retained VSIX from the GitHub release** for the VS Code Marketplace, Open VSX
 and `speclynx-editor`. Rebuilding would create an untested artifact identity even though
 obfuscation has been removed. These uploads and the announcement remain maintainer actions.
+
+### 1.6.0 icon-only distribution correction
+
+For 1.6.0, use `vscode-openapi-toolkit-1.6.0-marketplace.vsix` from the GitHub
+release for extension distribution. The original archive has a 1100x1100 icon that
+Marketplace rejected; the corrected archive uses a 256x256 PNG rendered from the
+unchanged `images/icon.svg`. Only `extension/images/icon.png` differs among the
+extracted files. Runtime bundles, version metadata, README, changelog and notices
+are unchanged; ZIP compression and bookkeeping can differ after repackaging.
+
+This is an explicitly approved, one-time icon-only exception to the retained-artifact
+rule, not a rebuild or replacement of the original release. Preserve the original
+`vscode-openapi-toolkit-1.6.0.vsix` filename, asset and bytes, plus the original
+`release-record.json`. The corrected archive has a separate filename and SHA-256;
+its identity and verification are documented in
+[vsix-correction.md](https://github.com/speclynx/vscode-openapi-toolkit/releases/download/v1.6.0/vsix-correction.md)
+and highlighted in the v1.6.0 release notes. The original record continues to describe
+only the original CI artifacts; release CI retries continue using those originals.
+
+The extension version remains 1.6.0 because that version had not been published to
+Marketplace when the correction was prepared. Do not move the tag, republish npm,
+change the Claude payload/catalog or overwrite existing assets for this correction.
+Future releases package the corrected source icon through the normal release workflow.
