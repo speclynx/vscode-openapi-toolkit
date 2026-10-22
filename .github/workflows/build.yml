@@ -50,6 +50,9 @@ jobs:
           path: .vscode-test
           key: vscode-test-${{ runner.os }}
 
+      # `npm ci` also fails when the lockfile no longer satisfies the manifests.
+      # The lockfile is deliberately not compared byte for byte: npm versions
+      # disagree on its `peer` flags, so every Dependabot update would fail.
       - name: Install dependencies
         run: npm ci
 
@@ -58,13 +61,6 @@ jobs:
       # was never published.
       - name: Check version sync
         run: node scripts/check-version-sync.mjs
-
-      # A lockfile that disagrees with the manifests fails `npm ci` at tag time,
-      # when the tag is already public and immutable.
-      - name: Check the lockfile is up to date
-        run: |
-          npm install --package-lock-only --ignore-scripts
-          git diff --exit-code package-lock.json
 
       # The consumer fixture resolves the package exports to generated declarations.
       - name: Generate server declarations

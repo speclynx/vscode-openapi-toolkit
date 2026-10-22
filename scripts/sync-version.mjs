@@ -58,8 +58,8 @@ const pluginClaudeManifest = readJson(PLUGIN_CLAUDE_MANIFEST);
 pluginClaudeManifest.version = version;
 writeJson(PLUGIN_CLAUDE_MANIFEST, pluginClaudeManifest);
 
-// `npm pkg set` does not touch the lockfile, and `npm ci` validates workspace
-// versions against it, so a stale lock fails the release after the tag is public.
+// `npm pkg set` does not touch the lockfile, which records the workspace versions
+// too. `npm ci` accepts it stale; check-version-sync.mjs rejects it.
 run('npm', ['install', '--package-lock-only', '--ignore-scripts']);
 
 const mismatched = collectVersions().filter((location) => location.version !== version);
