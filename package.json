@@ -152,7 +152,13 @@
   ],
   "capabilities": {
     "untrustedWorkspaces": {
-      "supported": true
+      "supported": "limited",
+      "description": "In Restricted Mode, Spectral linting is off, because a Spectral ruleset can run code, and the workspace cannot choose the rules files.",
+      "restrictedConfigurations": [
+        "speclynx.openapi.validation.applySpectralValidation",
+        "speclynx.openapi.validation.spectralRulesFile",
+        "speclynx.openapi.validation.semanticRulesFile"
+      ]
     },
     "virtualWorkspaces": true
   },

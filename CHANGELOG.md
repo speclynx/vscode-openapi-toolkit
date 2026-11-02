@@ -7,6 +7,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Security
 
+- run Spectral, whose rulesets can run code, only in trusted workspaces, and keep the workspace from choosing the rules files in Restricted Mode
 - update `follow-redirects` to 1.16.2 and `fast-uri` to 3.1.9, both bundled into the extension and the language server
 - update `undici`, `qs`, `serialize-javascript` and `@azure/msal-node` in the build tooling to patched releases
 

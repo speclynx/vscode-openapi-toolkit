@@ -85,6 +85,7 @@ Choose the preview renderer in settings (Scalar or Swagger UI). See the document
 
 ### Rulesets
 - Configure **Spectral rulesets** via workspace files or settings
+- Spectral rulesets can run code, so Spectral linting runs only in [trusted workspaces](https://code.visualstudio.com/docs/editing/workspaces/workspace-trust)
 - Configure **SpecLynx semantic rules** via workspace files or settings
 - Optional command to select a ruleset file (see docs)
 

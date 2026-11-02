@@ -1,5 +1,9 @@
 import * as vscode from 'vscode';
-import { LanguageClientOptions, BaseLanguageClient } from 'vscode-languageclient';
+import {
+  LanguageClientOptions,
+  BaseLanguageClient,
+  DidChangeConfigurationNotification,
+} from 'vscode-languageclient';
 import type { RelativePattern } from 'vscode-languageclient';
 import { SemanticTokensFeature } from 'vscode-languageclient/lib/common/semanticTokens';
 import { url } from '@speclynx/apidom-reference/configuration/empty';
@@ -7,6 +11,7 @@ import * as preview from './preview';
 import * as languageDetection from './languageFeatures/languageDetection';
 import { CommandManager } from './commandManager';
 import { registerOpenAPIToolkitCommands } from './commands/index';
+import { CONFIGURATION_SECTION, configurationMiddleware, restrictToTrust } from './workspaceTrust';
 
 export type LanguageClientConstructor = (
   name: string,
@@ -36,8 +41,9 @@ export async function startClient(
 ): Promise<BaseLanguageClient> {
   const commandManager = new CommandManager();
 
-  const extensionConfig: unknown = JSON.parse(
-    JSON.stringify(vscode.workspace.getConfiguration('speclynx.openapi')),
+  const extensionConfig = restrictToTrust(
+    JSON.parse(JSON.stringify(vscode.workspace.getConfiguration(CONFIGURATION_SECTION))),
+    vscode.workspace.isTrusted,
   );
 
   const clientOptions: LanguageClientOptions = {
@@ -45,6 +51,11 @@ export async function startClient(
     documentSelector: ['apidom'],
     initializationOptions: {
       extensionConfig,
+    },
+    middleware: {
+      workspace: {
+        configuration: configurationMiddleware(() => vscode.workspace.isTrusted),
+      },
     },
   };
 
@@ -103,5 +114,13 @@ export async function startClient(
   preview.activate(context);
 
   await client.start();
+
+  // The server rereads its settings on a configuration change, and with trust
+  // granted they now come back with Spectral as the user configured it.
+  context.subscriptions.push(
+    vscode.workspace.onDidGrantWorkspaceTrust(() => {
+      void client.sendNotification(DidChangeConfigurationNotification.type, { settings: null });
+    }),
+  );
   return client;
 }
