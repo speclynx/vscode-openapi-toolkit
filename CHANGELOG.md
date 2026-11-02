@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# Unreleased
+
+### Security
+
+- update `follow-redirects` to 1.16.2 and `fast-uri` to 3.1.9, both bundled into the extension and the language server
+- update `undici`, `qs`, `serialize-javascript` and `@azure/msal-node` in the build tooling to patched releases
+
 # 1.6.0 (2026-10-13)
 
 ### Features
