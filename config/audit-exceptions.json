@@ -1,0 +1,16 @@
+{
+  "exceptions": [
+    {
+      "id": "GHSA-g3hv-75wg-m249",
+      "package": "minimatch",
+      "expires": "2027-01-31",
+      "reason": "Patched only in minimatch 11, while ESLint, typescript-eslint, mocha, vsce, Spectral and vscode-languageclient depend on older majors. The bundled copies, 3.1.5 through Spectral and 5.1.9 through vscode-languageclient, do not contain the vulnerable preprocessing (firstPhasePreProcess, optimizationLevel). The 10.x copies that do are build and test tooling only."
+    },
+    {
+      "id": "GHSA-3g3m-2fjr-6pw4",
+      "package": "glob",
+      "expires": "2027-01-31",
+      "reason": "Patched only in glob 14, while mocha and rimraf require glob 13. glob is build and test tooling only and is not bundled."
+    }
+  ]
+}

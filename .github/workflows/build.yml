@@ -110,4 +110,6 @@ jobs:
           node-version-file: .nvmrc
       - run: npm ci --ignore-scripts --no-audit --no-fund
       # Bundled dependencies are also declared as devDependencies: do not omit them.
-      - run: npm audit --audit-level=low
+      # An advisory with no fix in range passes only through a reviewed, expiring
+      # entry in config/audit-exceptions.json.
+      - run: node scripts/check-audit.mjs
