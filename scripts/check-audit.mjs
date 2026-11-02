@@ -7,6 +7,7 @@
 
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { calendarDate } from './changelog.mjs';
 import { repoRoot, readJson } from './versions.mjs';
 
 export const EXCEPTIONS_FILE = 'config/audit-exceptions.json';
@@ -44,7 +45,8 @@ export function checkAudit(advisories, exceptions, today) {
   const problems = [];
   for (const exception of exceptions) {
     const label = `${exception.id} ${exception.package}`;
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(exception.expires ?? '') || !exception.reason) {
+    // A malformed date would compare as later than any real one and never expire.
+    if (!calendarDate(exception.expires) || !exception.reason) {
       problems.push(`${label}: an exception needs an "expires" date (YYYY-MM-DD) and a "reason"`);
     } else if (exception.expires < today) {
       problems.push(`${label}: exception expired on ${exception.expires}; review it again`);
@@ -68,6 +70,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       cwd: repoRoot,
       encoding: 'utf8',
       maxBuffer: 64 * 1024 * 1024,
+      shell: process.platform === 'win32',
     });
     const advisories = auditAdvisories(JSON.parse(audit.stdout));
     const { exceptions } = readJson(EXCEPTIONS_FILE);

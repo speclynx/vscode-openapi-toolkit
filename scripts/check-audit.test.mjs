@@ -43,10 +43,12 @@ test('only a matching, reasoned and unexpired exception allows an advisory', () 
     /GHSA-aaaa-bbbb-cccc minimatch/,
   );
   assert.match(checkAudit(advisories, [exception], '2027-02-01').join('\n'), /expired/);
-  assert.match(
-    checkAudit(advisories, [{ ...exception, reason: '' }], '2026-11-02').join('\n'),
-    /needs an "expires" date/,
-  );
+  for (const incomplete of [{ reason: '' }, { expires: '2027-99-99' }, { expires: undefined }]) {
+    assert.match(
+      checkAudit(advisories, [{ ...exception, ...incomplete }], '2027-03-01').join('\n'),
+      /needs an "expires" date/,
+    );
+  }
   const stale = checkAudit(
     advisories,
     [exception, { ...exception, package: 'glob' }],
