@@ -45,7 +45,8 @@ jobs:
 
   artifacts:
     needs: preflight
-    runs-on: ubuntu-latest
+    # Playwright 1.58 cannot install Chromium on ubuntu-26.04, which ubuntu-latest now is.
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       actions: read

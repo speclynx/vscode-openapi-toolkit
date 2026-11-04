@@ -29,7 +29,8 @@ jobs:
       - run: node --test scripts/check-private-paths.test.mjs
 
   build:
-    runs-on: ubuntu-latest
+    # Playwright 1.58 cannot install Chromium on ubuntu-26.04, which ubuntu-latest now is.
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v7
