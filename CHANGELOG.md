@@ -3,7 +3,9 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# 1.6.1 (2026-11-04)
+# 1.6.2 (2026-11-04)
+
+1.6.1 was tagged but never published: its release build failed before publishing anything.
 
 ### Security
 
