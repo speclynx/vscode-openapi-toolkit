@@ -91,7 +91,7 @@ jobs:
           npm run lint
           npm run typescript:check-types
           npm run test:tooling
-          npm audit --audit-level=low
+          node scripts/check-audit.mjs
           node node_modules/playwright/cli.js install --with-deps chromium
           node scripts/check-plugin-catalog.mjs --fetch
           npm pkg set "gitHead=$GITHUB_SHA" --workspace=server
