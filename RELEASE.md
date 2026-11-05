@@ -64,9 +64,10 @@ recovery rules below; do not move the tag or rebuild a published version to chan
 
 ## Verify release authorization
 
-Configure the `release` environment with both maintainers eligible to review,
-self-review prevented and administrator bypass disabled. Restrict deployments to
-release tags with a tag rule matching `v*`. Naming an environment in YAML does not
+Configure the `release` environment with both maintainers as required reviewers and
+administrator bypass disabled. Self-review is allowed: an approval from either reviewer
+releases each job, including from the maintainer who pushed the tag. Restrict deployments
+to release tags with a tag rule matching `v*`. Naming an environment in YAML does not
 configure these controls.
 
 For an existing npm package, configure its trusted publisher with the exact repository
