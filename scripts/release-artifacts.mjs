@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, appendFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { setTimeout as delay } from 'node:timers/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -43,11 +44,7 @@ export function verifyFiles(record, directory, expectedSha) {
     if (kind === 'npm') assert.equal(actual.integrity, item.integrity);
   }
 }
-export async function registryMetadata(
-  version,
-  request = fetch,
-  pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
-) {
+export async function registryMetadata(version, request = fetch, pause = delay) {
   assert.match(version, /^\d+\.\d+\.\d+$/);
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
@@ -74,7 +71,7 @@ export async function registryMetadata(
     }
   }
 }
-export async function registryState(record, request = fetch, pause) {
+export async function registryState(record, request = fetch, pause = delay) {
   validateRecord(record);
   const metadata = await registryMetadata(record.version, request, pause);
   if (metadata === null) return 'absent';
@@ -99,10 +96,20 @@ export async function registryState(record, request = fetch, pause) {
     } catch (error) {
       if (error.code === 'ERR_ASSERTION' || attempt === 2)
         throw new Error('Registry tarball identity verification failed');
-      await (pause ?? ((ms) => new Promise((resolve) => setTimeout(resolve, ms))))(
-        1000 * (attempt + 1),
-      );
+      await pause(1000 * (attempt + 1));
     }
+  }
+}
+// npm accepts a publication before the registry serves it ("may take a few minutes").
+export async function awaitPublication(record, request = fetch, pause = delay, checks = 40) {
+  for (let check = 1; ; check++) {
+    const state = await registryState(record, request, pause);
+    if (state !== 'absent') return state;
+    if (check === checks)
+      throw new Error(
+        `npm accepted ${record.version}, but the registry does not serve it yet; rerun the failed job once it does, which verifies it without publishing again`,
+      );
+    await pause(15000);
   }
 }
 function output(key, value) {
@@ -169,7 +176,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
             ],
             { stdio: 'inherit' },
           );
-          state = await registryState(record);
+          state = await awaitPublication(record);
           assert.equal(state, 'present-identical');
         }
         if (process.argv.includes('--require-present')) assert.equal(state, 'present-identical');

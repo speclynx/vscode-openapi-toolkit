@@ -149,6 +149,11 @@ publication must consume the retained tarball; neither repacks the workspace.
 | Any identity mismatch | Stop; use a new version for changed bytes. |
 | Network error or incomplete metadata | Bounded retries, then stop. |
 
+npm accepts a publication a few minutes before the registry serves it, so after publishing
+the job checks again every 15 seconds for up to ten minutes. If the version is still absent,
+rerun the failed job once `npm view @speclynx/api-language-server@<version>` shows it; the
+rerun verifies and skips the identical version.
+
 GitHub release uploads also verify existing asset bytes and refuse to clobber a
 mismatch. After completion, the release retains both archives and their record.
 
