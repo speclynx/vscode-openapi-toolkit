@@ -20,8 +20,8 @@ import {
   collectVersions,
   pluginServerPin,
   repoRoot,
-  setJsonValues,
 } from './versions.mjs';
+import { setJsonValues } from './json-values.mjs';
 
 const version = process.argv[2];
 

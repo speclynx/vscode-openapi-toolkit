@@ -4,11 +4,13 @@
 // plugin all carry the same number, and one tag `vX.Y.Z` releases them together.
 // The plugin lives outside the npm workspaces and pins the server exactly, so
 // `npm version --workspaces` cannot maintain this on its own.
+//
+// Guardrail and release preflight jobs import this module without installing
+// dependencies, so it imports only Node built-ins.
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { applyEdits, modify } from 'jsonc-parser';
 import { releaseSection } from './changelog.mjs';
 
 export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -26,16 +28,6 @@ export const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 
 export function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(repoRoot, relativePath), 'utf-8'));
-}
-
-/** Set each JSON path in `text` to `value`, leaving every other byte as written. */
-export function setJsonValues(text, jsonPaths, value) {
-  const formattingOptions = { insertSpaces: true, tabSize: 2 };
-  return jsonPaths.reduce(
-    (current, jsonPath) =>
-      applyEdits(current, modify(current, jsonPath, value, { formattingOptions })),
-    text,
-  );
 }
 
 /**

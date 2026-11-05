@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { setJsonValues } from './versions.mjs';
+import { setJsonValues } from './json-values.mjs';
 
 test('version edits leave escapes, key order, inline arrays and other values as written', () => {
   const manifest = `{
