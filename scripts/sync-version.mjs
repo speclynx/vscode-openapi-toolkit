@@ -3,23 +3,24 @@
 //
 //   node scripts/sync-version.mjs 1.5.4
 //
-// Writes the three workspace manifests, both plugin manifests, the plugin's exact
-// dependency pin on the server, and refreshes the lockfile. Validates that
-// CHANGELOG.md already documents the version, then re-reads everything to prove
-// the result is consistent.
+// Sets the version in the three workspace manifests, both plugin manifests, the
+// plugin's exact dependency pin on the server and the lockfile, and changes nothing
+// else in those files. Validates that CHANGELOG.md already documents the version,
+// then re-reads everything to prove the result is consistent.
 
-import { execFileSync } from 'node:child_process';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import {
   PLUGIN_CLAUDE_MANIFEST,
   PLUGIN_MANIFEST,
   SERVER_PACKAGE_NAME,
   VERSION_PATTERN,
+  WORKSPACE_MANIFESTS,
   readChangelogRelease,
   collectVersions,
   pluginServerPin,
-  readJson,
   repoRoot,
-  writeJson,
+  setJsonValues,
 } from './versions.mjs';
 
 const version = process.argv[2];
@@ -38,29 +39,26 @@ try {
   process.exit(1);
 }
 
-const run = (command, args) =>
-  execFileSync(command, args, {
-    cwd: repoRoot,
-    stdio: 'inherit',
-    shell: process.platform === 'win32',
-  });
+// Edit the values in place: npm's writers would also sort dependencies, unescape
+// strings and re-resolve the lockfile, none of which belongs in a version change.
+const setVersion = (relativePath, jsonPaths) => {
+  const file = path.join(repoRoot, relativePath);
+  fs.writeFileSync(file, setJsonValues(fs.readFileSync(file, 'utf-8'), jsonPaths, version));
+};
 
-// The three workspace manifests, via npm so its own JSON writer preserves formatting.
-run('npm', ['pkg', 'set', `version=${version}`, '--workspaces', '--include-workspace-root']);
+for (const manifest of [...WORKSPACE_MANIFESTS, PLUGIN_CLAUDE_MANIFEST]) {
+  setVersion(manifest, [['version']]);
+}
 
 // The plugin is not a workspace: its version and its pin on the server are ours to maintain.
-const pluginManifest = readJson(PLUGIN_MANIFEST);
-pluginManifest.version = version;
-pluginManifest.dependencies[SERVER_PACKAGE_NAME] = version;
-writeJson(PLUGIN_MANIFEST, pluginManifest);
+setVersion(PLUGIN_MANIFEST, [['version'], ['dependencies', SERVER_PACKAGE_NAME]]);
 
-const pluginClaudeManifest = readJson(PLUGIN_CLAUDE_MANIFEST);
-pluginClaudeManifest.version = version;
-writeJson(PLUGIN_CLAUDE_MANIFEST, pluginClaudeManifest);
-
-// `npm pkg set` does not touch the lockfile, which records the workspace versions
-// too. `npm ci` accepts it stale; check-version-sync.mjs rejects it.
-run('npm', ['install', '--package-lock-only', '--ignore-scripts']);
+// The lockfile records the workspace versions too. `npm ci` accepts it stale;
+// check-version-sync.mjs rejects it.
+setVersion('package-lock.json', [
+  ['version'],
+  ...['', 'client', 'server'].map((workspace) => ['packages', workspace, 'version']),
+]);
 
 const mismatched = collectVersions().filter((location) => location.version !== version);
 const expectedPin = version;

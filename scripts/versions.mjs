@@ -8,16 +8,17 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { applyEdits, modify } from 'jsonc-parser';
 import { releaseSection } from './changelog.mjs';
 
 export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 export const SERVER_PACKAGE_NAME = '@speclynx/api-language-server';
 
-/** Manifests whose `version` is set by `npm pkg set --workspaces --include-workspace-root`. */
+/** The root and npm workspace manifests. */
 export const WORKSPACE_MANIFESTS = ['package.json', 'client/package.json', 'server/package.json'];
 
-/** Manifests outside the workspaces, rewritten directly. */
+/** Manifests outside the workspaces. */
 export const PLUGIN_MANIFEST = 'plugins/speclynx-lsp/package.json';
 export const PLUGIN_CLAUDE_MANIFEST = 'plugins/speclynx-lsp/.claude-plugin/plugin.json';
 
@@ -27,8 +28,14 @@ export function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(repoRoot, relativePath), 'utf-8'));
 }
 
-export function writeJson(relativePath, value) {
-  fs.writeFileSync(path.join(repoRoot, relativePath), `${JSON.stringify(value, null, 2)}\n`);
+/** Set each JSON path in `text` to `value`, leaving every other byte as written. */
+export function setJsonValues(text, jsonPaths, value) {
+  const formattingOptions = { insertSpaces: true, tabSize: 2 };
+  return jsonPaths.reduce(
+    (current, jsonPath) =>
+      applyEdits(current, modify(current, jsonPath, value, { formattingOptions })),
+    text,
+  );
 }
 
 /**
