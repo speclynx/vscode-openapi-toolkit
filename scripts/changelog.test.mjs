@@ -97,6 +97,7 @@ test('all release entry points reject bad notes before version writes or npm exe
     mkdirSync(path.join(directory, 'scripts'));
     for (const name of [
       'versions.mjs',
+      'json-values.mjs',
       'changelog.mjs',
       'check-version-sync.mjs',
       'changelog-section.mjs',
