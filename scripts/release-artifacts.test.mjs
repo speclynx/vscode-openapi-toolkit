@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { digests, registryState, registryMetadata, validateRecord } from './release-artifacts.mjs';
+import {
+  awaitPublication,
+  digests,
+  registryState,
+  registryMetadata,
+  validateRecord,
+} from './release-artifacts.mjs';
 import { selectRecord } from './find-release-record.mjs';
 const bytes = Buffer.from('synthetic retained archive');
 const record = {
@@ -61,6 +67,29 @@ test('same gitHead with different bytes or SRI stops before publication', async 
         : reply(metadata),
     ),
   );
+});
+test('after publication the registry is polled boundedly until it serves the version', async () => {
+  let metadataRequests = 0;
+  const pauses = [];
+  const pause = async (ms) => pauses.push(ms);
+  const request = async (url) => {
+    if (url.endsWith('.tgz')) return { ok: true, arrayBuffer: async () => bytes };
+    return ++metadataRequests < 3 ? reply(null, 404) : reply(metadata);
+  };
+  assert.equal(await awaitPublication(record, request, pause), 'present-identical');
+  assert.equal(metadataRequests, 3);
+  assert.deepEqual(pauses, [15000, 15000]);
+  metadataRequests = 0;
+  await assert.rejects(
+    () => awaitPublication(record, async () => (metadataRequests++, reply(null, 404)), pause, 4),
+    /rerun the failed job/,
+  );
+  assert.equal(metadataRequests, 4);
+  pauses.length = 0;
+  await assert.rejects(() =>
+    awaitPublication(record, async () => reply({ ...metadata, gitHead: 'c'.repeat(40) }), pause),
+  );
+  assert.deepEqual(pauses, []);
 });
 test('records constrain source and filenames before reading archives', () => {
   assert.doesNotThrow(() => validateRecord(record, record.sourceSha));
