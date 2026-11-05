@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import {
   copyFileSync,
+  cpSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -9,6 +10,7 @@ import {
   writeFileSync,
   existsSync,
 } from 'node:fs';
+import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -102,6 +104,11 @@ test('all release entry points reject bad notes before version writes or npm exe
     ]) {
       copyFileSync(path.join(scripts, name), path.join(directory, 'scripts', name));
     }
+    // The one package these scripts import, resolved from the copy as from the repository.
+    const jsoncParser = createRequire(import.meta.url).resolve('jsonc-parser/package.json');
+    cpSync(path.dirname(jsoncParser), path.join(directory, 'node_modules', 'jsonc-parser'), {
+      recursive: true,
+    });
     const version = '1.6.0';
     const files = [
       'package.json',
