@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# Unreleased
+
+### Bug Fixes
+
+- parse more YAML correctly, including block scalars, escapes in double-quoted strings, aliases and flow collections
+- resolve references to files whose paths contain encoded characters or `?`
+- report each error in an externally referenced document once
+- mask credentials in errors about references fetched over HTTP
+
+### Improvements
+
+- update SpecLynx ApiDOM to 7.0.2 and `@speclynx/api-languageservice` to 3.0.4, which validates with precompiled JSON Schema validators
+
 # 1.6.2 (2026-11-04)
 
 1.6.1 was tagged but never published: its release build failed before publishing anything.
