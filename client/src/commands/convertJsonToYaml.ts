@@ -3,7 +3,8 @@ import { Utils as UriUtils } from 'vscode-uri';
 import type { Command } from '../commandManager';
 import { isApiDOMJSON } from '../languageFeatures/languageDetection';
 import type { BaseLanguageClient } from 'vscode-languageclient';
-import { ConversionResult, Format } from '@speclynx/api-languageservice';
+import type { ConversionResult } from '@speclynx/api-languageservice';
+import { ConversionFormat } from './conversionFormat';
 import { createFormattingOptions } from '../common/config/formattingOptionsFromConfiguration';
 
 export class ConvertJsonToYamlCommand implements Command {
@@ -36,8 +37,8 @@ export class ConvertJsonToYamlCommand implements Command {
             'apidom/convert',
             {
               uri: String(sourceDocumentURI),
-              sourceFormat: Format.JSON,
-              targetFormat: Format.YAML,
+              sourceFormat: ConversionFormat.JSON,
+              targetFormat: ConversionFormat.YAML,
               conversionOptions: {
                 enhancedFormatting: true,
                 formattingOptions: createFormattingOptions(sourceDocument, 'json'),
