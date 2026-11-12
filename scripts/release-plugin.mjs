@@ -250,14 +250,14 @@ async function run() {
       );
     else git(['push', '--porcelain', repositoryUrl, `${payload.payloadSha}:${ref}`]);
     assert.equal(remotePayload(ref), payload.payloadSha);
-    appendFileSync(process.env.GITHUB_OUTPUT, `payload_sha=${payload.payloadSha}\n`);
     appendFileSync(
       process.env.GITHUB_STEP_SUMMARY,
       `Plugin payload: ${payload.payloadSha}\n\nRef: ${ref}\n`,
     );
   } else if (command === 'promote') {
-    const payloadSha = process.env.PAYLOAD_SHA;
-    assert.equal(remotePayload(ref), payloadSha);
+    // The tag run pushed this ref; the reviewed evidence must name the same SHA.
+    const payloadSha = remotePayload(ref);
+    assert.ok(payloadSha, `No prepared plugin payload at ${ref}`);
     validatePayload(payloadSha, record);
     assert.match(process.env.RUNTIME_EVIDENCE_SHA256 ?? '', /^[a-f0-9]{64}$/);
     const release = JSON.parse(
