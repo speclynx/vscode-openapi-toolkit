@@ -14,7 +14,7 @@
         "source": "git-subdir",
         "url": "https://github.com/speclynx/vscode-openapi-toolkit.git",
         "path": "plugins/speclynx-lsp",
-        "sha": "2494ea02203f1639ac4e8762ffb5d3c71d339a9c"
+        "sha": "eec001fd6f36d320f0802532c34d84224cde7523"
       }
     }
   ]
