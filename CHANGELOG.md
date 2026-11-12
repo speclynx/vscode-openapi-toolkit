@@ -14,7 +14,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Improvements
 
-- update SpecLynx ApiDOM to 7.0.2 and `@speclynx/api-languageservice` to 3.0.4, which validates with precompiled JSON Schema validators
+- update SpecLynx ApiDOM to 7.0.2 and `@speclynx/api-languageservice` to 3.0.5, which validates with precompiled JSON Schema validators
 
 # 1.6.2 (2026-11-04)
 
