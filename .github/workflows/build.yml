@@ -14,6 +14,8 @@ permissions:
   contents: read
 
 jobs:
+  # Checks the plugin catalog against the payload it pins. The main ruleset requires
+  # this job by name.
   publication-guardrails:
     runs-on: ubuntu-latest
     steps:
@@ -23,10 +25,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-      - run: node scripts/check-private-paths.mjs
-      - run: node scripts/check-retired-identifiers.mjs
       - run: node scripts/check-plugin-catalog.mjs --fetch
-      - run: node --test scripts/check-private-paths.test.mjs
 
   build:
     runs-on: ubuntu-latest

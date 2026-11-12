@@ -48,7 +48,7 @@ consumer fixture resolves the package name through its published exports map.
 npm run build:types --workspace=server
 npm run lint
 npm run typescript:check-types
-npm run check:publication
+npm run check:plugin-catalog
 npm run test:tooling
 npm run release:check
 npm run build:prod

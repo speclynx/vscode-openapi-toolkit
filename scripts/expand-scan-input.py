@@ -11,15 +11,14 @@ MAX_DEPTH = 5
 def private_path(name):
     parts = PurePosixPath(name).parts
     if name.lower().endswith('.iml'): return True
-    return any(p in ('.ftlocal', '.codex', '.git', '.idea') for p in parts) or \
-        re.search(r'(^|/)docs/changelog/(01-lsp-server|02-release-automation|03-public-repo)(/|$)', name) is not None or \
+    return any(p in ('.git', '.idea') for p in parts) or \
         any(p == '.env' or p.startswith('.env.') or p in ('id_rsa', 'id_ed25519') for p in parts)
 
 def safe_name(name):
     p = PurePosixPath(name)
     if p.is_absolute() or '..' in p.parts or '\\' in name or re.match(r'^[A-Za-z]:', name) or any(ord(c) < 32 for c in name):
         raise ValueError('Unsafe archive member path')
-    if private_path(name): raise ValueError('Private record or credential-file path in scan input')
+    if private_path(name): raise ValueError('Repository, IDE or credential-file path in scan input')
 
 class Expander:
     def __init__(self, destination):

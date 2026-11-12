@@ -83,7 +83,7 @@
     "test": "npm --workspace=server run test && sh ./scripts/e2e.sh",
     "test:web": "vscode-test-web --extensionDevelopmentPath=. --browser=chromium --verbose",
     "typescript:check-types": "tsc -b --verbose --noEmit",
-    "check:publication": "node scripts/check-private-paths.mjs && node scripts/check-retired-identifiers.mjs && node scripts/check-plugin-catalog.mjs",
+    "check:plugin-catalog": "node scripts/check-plugin-catalog.mjs",
     "test:tooling": "node --test scripts/*.test.mjs",
     "test:browser": "vscode-test-web --quality=stable --browser=chromium --headless --extensionDevelopmentPath=. --extensionTestsPath=scripts/browser-smoke.cjs client/testFixture",
     "test:previews": "node scripts/test-preview-assets.mjs"

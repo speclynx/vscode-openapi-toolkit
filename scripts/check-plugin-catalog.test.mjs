@@ -7,9 +7,9 @@ import {
   repositoryUrl,
 } from './check-plugin-catalog.mjs';
 
-test('bootstrap is explicitly empty and development plugin remains checked', () => {
-  assert.equal(checkCatalog({ name: 'speclynx', plugins: [] }, { bootstrap: true }), 'bootstrap');
-  assert.throws(() => checkCatalog({ name: 'speclynx', plugins: [{}] }, { bootstrap: true }));
+test('an empty catalog is valid and the development plugin remains checked', () => {
+  assert.equal(checkCatalog({ name: 'speclynx', plugins: [] }), 'empty');
+  assert.throws(() => checkCatalog({ name: 'other', plugins: [] }));
   const read = (file) => (file === '.claude-plugin/plugin.json' ? { name: 'wrong' } : {});
   assert.throws(() => checkDevelopmentPlugin(read));
   assert.doesNotThrow(() => checkDevelopmentPlugin());

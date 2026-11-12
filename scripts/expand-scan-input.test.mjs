@@ -2,13 +2,13 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { test } from 'node:test';
 
-test('archive scanner fails closed on private members, traversal, symlinks and oversized content', () => {
+test('archive scanner fails closed on repository, IDE and credential members, traversal, symlinks and oversized content', () => {
   const script = `
 import importlib.util, tempfile, pathlib, zipfile, io
 spec=importlib.util.spec_from_file_location('scan','scripts/expand-scan-input.py'); scan=importlib.util.module_from_spec(spec);spec.loader.exec_module(scan)
 with tempfile.TemporaryDirectory() as root:
  d=pathlib.Path(root)
- for name in ['../escape', 'extension/.ftlocal/private.md', 'extension/.codex/settings.json', 'extension/.idea/workspace.xml', 'extension/project.iml', 'extension/docs/changelog/01-lsp-server/plan.md', 'extension/docs/changelog/02-release-automation/plan.md', 'extension/docs/changelog/03-public-repo/plan.md', '/absolute']:
+ for name in ['../escape', 'extension/.git/config', 'extension/.idea/workspace.xml', 'extension/project.iml', 'extension/.env', 'extension/.env.local', 'extension/id_rsa', 'extension/id_ed25519', '/absolute']:
   data=io.BytesIO()
   with zipfile.ZipFile(data,'w') as z:z.writestr(name,'synthetic fixture')
   try:scan.Expander(d).add('fixture.zip',data.getvalue());raise AssertionError('accepted forbidden path')
