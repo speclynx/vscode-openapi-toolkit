@@ -224,7 +224,9 @@ currently served catalog SHA for `previousPayloadSha`.
 Keep raw logs, screenshots with private content and review notes private. After review,
 upload this public-safe evidence file as a release asset, calculate its SHA-256, and
 run `release.yml` manually **from the same release tag**, with `promote_plugin` enabled
-and `runtime_evidence_sha256` set to that digest. Environment approval is still required.
+and `runtime_evidence_sha256` set to that digest. That run restores and verifies the
+retained files and skips the npm, GitHub release and payload jobs the tag run completed,
+so `promote-plugin` is the only job awaiting environment approval.
 
 For example, after replacing the version and evidence digest:
 

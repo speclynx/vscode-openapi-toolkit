@@ -152,7 +152,10 @@ jobs:
       - name: Evaluate registry identity with the retained archive
         run: node scripts/release-artifacts.mjs registry
 
+  # The tag run already completed the three publishing jobs, so a promotion dispatch
+  # skips them instead of asking for their environment approvals again.
   publish-npm:
+    if: github.event_name == 'push' || !inputs.promote_plugin
     needs: [preflight, artifacts]
     runs-on: ubuntu-latest
     environment: release
@@ -180,6 +183,7 @@ jobs:
       - run: node scripts/release-artifacts.mjs publish
 
   github-release:
+    if: github.event_name == 'push' || !inputs.promote_plugin
     needs: [preflight, artifacts, publish-npm]
     runs-on: ubuntu-latest
     environment: release
@@ -207,14 +211,13 @@ jobs:
         run: node scripts/publish-github-release.mjs
 
   prepare-plugin:
+    if: github.event_name == 'push' || !inputs.promote_plugin
     needs: [preflight, artifacts, github-release]
     runs-on: ubuntu-latest
     environment: release
     permissions:
       contents: read
       actions: read
-    outputs:
-      payload_sha: ${{ steps.payload.outputs.payload_sha }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -234,7 +237,6 @@ jobs:
       - name: Prepare and scan the immutable plugin payload
         run: node scripts/release-plugin.mjs prepare
       - name: Publish only the cleared payload ref
-        id: payload
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PAT }}
         run: |
@@ -247,7 +249,7 @@ jobs:
 
   promote-plugin:
     if: github.event_name == 'workflow_dispatch' && inputs.promote_plugin
-    needs: [preflight, artifacts, prepare-plugin]
+    needs: [preflight, artifacts]
     runs-on: ubuntu-latest
     environment: release
     permissions:
@@ -271,7 +273,6 @@ jobs:
       - name: Verify registry and reviewed runtime evidence before changing the catalog
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PAT }}
-          PAYLOAD_SHA: ${{ needs.prepare-plugin.outputs.payload_sha }}
           RUNTIME_EVIDENCE_SHA256: ${{ inputs.runtime_evidence_sha256 }}
         run: |
           gh auth setup-git
