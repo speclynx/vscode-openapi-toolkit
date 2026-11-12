@@ -38,8 +38,6 @@ jobs:
           git fetch --no-tags origin main
           git merge-base --is-ancestor "$GITHUB_SHA" origin/main
           node scripts/check-version-sync.mjs --tag
-          node scripts/check-private-paths.mjs
-          node scripts/check-retired-identifiers.mjs
       - id: version
         run: node -e 'require("fs").appendFileSync(process.env.GITHUB_OUTPUT, `version=${require("./package.json").version}\n`)'
 

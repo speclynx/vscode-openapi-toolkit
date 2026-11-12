@@ -22,12 +22,10 @@ export function checkDevelopmentPlugin(read = (file) => readJson(`${pluginPath}/
   );
   return plugin;
 }
-export function checkCatalog(catalog, { bootstrap = false, readPinned } = {}) {
+export function checkCatalog(catalog, { readPinned } = {}) {
   assert.equal(catalog.name, 'speclynx');
   assert.ok(Array.isArray(catalog.plugins));
-  if (bootstrap)
-    assert.deepEqual(catalog.plugins, [], 'Bootstrap catalog must explicitly contain no entries');
-  if (catalog.plugins.length === 0) return 'bootstrap';
+  if (catalog.plugins.length === 0) return 'empty';
   assert.equal(new Set(catalog.plugins.map((item) => item.name)).size, catalog.plugins.length);
   const matching = catalog.plugins.filter((item) => item.name === 'speclynx-lsp');
   if (matching.length === 0) return 'no-speclynx-entry';
@@ -68,7 +66,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       readFileSync(new URL('../.claude-plugin/marketplace.json', import.meta.url)),
     );
     const result = checkCatalog(catalog, {
-      bootstrap: process.argv.includes('--bootstrap'),
       readPinned: (sha, file) => {
         if (process.argv.includes('--fetch'))
           execFileSync('git', ['fetch', '--no-tags', 'origin', sha], {
