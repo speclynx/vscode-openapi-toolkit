@@ -113,7 +113,7 @@
     "@speclynx/apidom-core": "^7.0.2",
     "@speclynx/api-languageservice": "^3.0.5",
     "@speclynx/apidom-reference": "^7.0.2",
-    "@stoplight/spectral-core": "^1.23.1",
+    "@stoplight/spectral-core": "^1.24.1",
     "@stoplight/spectral-functions": "^1.10.5",
     "@stoplight/spectral-ruleset-bundler": "^1.7.0",
     "@stoplight/spectral-rulesets": "^1.22.7",
