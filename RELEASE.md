@@ -8,9 +8,6 @@ A skipped `promote-plugin` job on the initial tag run is expected.
 
 ## Routine release sequence
 
-The npm package and plugin catalog already exist. Use this sequence for the next real
-release; the first npm bootstrap and 1.6.0 icon correction below are historical exceptions.
-
 | Step | Executor | Result |
 | --- | --- | --- |
 | Prepare and merge source | Maintainer and PR reviewer | Confirm version/date, update manifests and notes, pass normal CI |
@@ -70,20 +67,19 @@ releases each job, including from the maintainer who pushed the tag. Restrict de
 to release tags with a tag rule matching `v*`. Naming an environment in YAML does not
 configure these controls.
 
-For an existing npm package, configure its trusted publisher with the exact repository
+The npm package's trusted publisher names the exact repository
 `speclynx/vscode-openapi-toolkit`, workflow filename `release.yml`, environment `release`,
-and permission for direct `npm publish`. If the package does not exist yet, follow
-[Historical first npm publication](#historical-first-npm-publication) before configuring trust.
-The hosted runner uses the Node version in `.nvmrc`; trusted publication requires
-Node 22.14 or later and npm 11.5.1 or later. Only `publish-npm` receives
-`id-token: write`; no `NPM_TOKEN` is used. See the
+and permission for direct `npm publish`. The hosted runner uses the Node version in
+`.nvmrc`; trusted publication requires Node 22.14 or later and npm 11.5.1 or later.
+Only `publish-npm` receives `id-token: write`; no `NPM_TOKEN` is used. See the
 [npm trusted publishing documentation](https://docs.npmjs.com/trusted-publishers/).
 
-Configure or recreate trust close to the next real publication: a new configuration
-expires unless its first successful publish occurs within two days. The 1.6.0 manual
-bootstrap and subsequent identical-version skip did not exercise OIDC. The next genuine
-npm release must verify OIDC publication and provenance; do not cut a dummy release to
-exercise authentication. An expired configuration must be deleted and recreated.
+1.6.0 was published manually before trust could be configured, so it has no provenance;
+1.6.2 was the first OIDC publication. If the trusted publisher is ever recreated, do so
+close to the next real publication: a new configuration expires unless its first
+successful publish occurs within two days, and an expired one must be deleted and
+recreated. Do not cut a dummy release to exercise authentication. See
+[npm's configuration expiry rules](https://docs.npmjs.com/trusted-publishers/#trusted-publisher-configuration-expiry).
 
 `RELEASE_PAT` is an environment secret used only for plugin payload/catalog writes.
 Use a fine-grained token restricted to this repository, with the needed contents
@@ -167,37 +163,6 @@ retry also requires explicit recovery review, since an absent record cannot prov
 whether an original archive was lost. See
 [GitHub artifact retention](https://docs.github.com/en/actions/tutorials/store-and-share-data).
 
-## Historical first npm publication
-
-The package already exists after the 1.6.0 bootstrap. Do not repeat this manual
-publication for routine releases; the following describes the one-time bootstrap.
-
-A trusted publisher cannot be configured for a package name that does not yet exist.
-For the first version, let the tag's `preflight` and `artifacts` jobs complete, then
-leave `publish-npm` waiting for release-environment approval. Download the deliverables
-and record by their recorded artifact IDs, verify their digests, retain a private recovery
-copy, and complete confidentiality and attribution review of those exact files.
-
-The designated npm maintainer then uses interactive 2FA to publish exactly that archive:
-
-```sh
-npm publish ./speclynx-api-language-server-1.6.0.tgz --access public --provenance=false
-```
-
-Do not build locally or use `npm publish --workspace=server`. Verify the registry's
-`gitHead`, SHA-512 SRI and downloaded SHA-256 against the retained record, and test
-installation of the published version. Then approve the waiting `publish-npm` job
-(or rerun it if a previous attempt failed). It verifies and skips the identical version
-and allows the GitHub release jobs to continue; an intentional failed attempt is unnecessary.
-
-This manual bootstrap has no npm provenance, and the subsequent skip does not exercise
-OIDC. The next genuine npm publication must verify the OIDC/provenance path; a dry run
-cannot prove authentication. Configure the package's trusted publisher shortly before
-that publication using the repository/workflow/environment tuple above. A new configuration
-expires unless its first successful publish occurs within two days; delete and recreate
-an expired configuration. Record this outstanding verification after the bootstrap release.
-See [npm's configuration expiry rules](https://docs.npmjs.com/trusted-publishers/#trusted-publisher-configuration-expiry).
-
 ## Plugin payload and runtime verification
 
 After npm identity verification, `prepare-plugin` freezes the dependency from the
@@ -227,10 +192,10 @@ Before advertising that payload, create a temporary local marketplace with
 ```
 
 Use isolated Claude configuration/cache, install from this temporary marketplace, and
-verify LSP initialization and diagnostics. Test updating a cached predecessor as well
-as a fresh install. For the first release, seed a local predecessor fixture and record
-that setup privately. Record Node, npm and Claude versions and installation time; an
-installation exceeding Claude's 60-second limit does not pass. See the official
+verify LSP initialization and diagnostics. Test updating a cached install of the
+currently published payload as well as a fresh install. Record Node, npm and Claude
+versions and installation time; an installation exceeding Claude's 60-second limit
+does not pass. See the official
 [plugin package dependency behavior](https://code.claude.com/docs/en/plugins/loading#nodejs-package-dependencies)
 and [plugin sources](https://code.claude.com/docs/en/plugins/marketplace-reference#plugin-sources).
 
@@ -241,8 +206,8 @@ Prepare a public-safe `plugin-runtime-evidence.json` with exactly these fields:
   "schemaVersion": 1,
   "sourceSha": "RELEASE_SOURCE_SHA",
   "payloadSha": "PAYLOAD_SHA",
-  "previousPayloadSha": null,
-  "version": "1.6.0",
+  "previousPayloadSha": "CURRENTLY_SERVED_PAYLOAD_SHA",
+  "version": "X.Y.Z",
   "nodeVersion": "24.10.0",
   "npmVersion": "11.6.1",
   "claudeVersion": "REPLACE_WITH_TESTED_VERSION",
@@ -255,7 +220,7 @@ Prepare a public-safe `plugin-runtime-evidence.json` with exactly these fields:
 ```
 
 The example is a schema illustration, not evidence of a completed test. Use the
-currently served catalog SHA for `previousPayloadSha`, or `null` for the first release.
+currently served catalog SHA for `previousPayloadSha`.
 Keep raw logs, screenshots with private content and review notes private. After review,
 upload this public-safe evidence file as a release asset, calculate its SHA-256, and
 run `release.yml` manually **from the same release tag**, with `promote_plugin` enabled
@@ -267,9 +232,6 @@ For example, after replacing the version and evidence digest:
 gh workflow run release.yml --repo speclynx/vscode-openapi-toolkit \
   --ref vX.Y.Z -f promote_plugin=true -f runtime_evidence_sha256=EVIDENCE_SHA256
 ```
-
-For a later release, use the currently published payload as the tested predecessor;
-the synthetic predecessor fixture was only needed for the first release.
 
 Promotion rechecks the registry, evidence digest, payload identity and tested predecessor.
 It compares versions against the manifest at the catalog's existing pin, preserving other
@@ -284,8 +246,8 @@ ship a corrected patch version for cached clients. Changing only a SHA does not 
 ## Distribution after verification
 
 Use the **retained VSIX from the GitHub release** for the VS Code Marketplace, Open VSX
-and `speclynx-editor`. Rebuilding would create an untested artifact identity even though
-obfuscation has been removed. These uploads and the announcement remain maintainer actions.
+and `speclynx-editor`. Rebuilding would create an untested artifact identity. These
+uploads and the announcement remain maintainer actions.
 
 For the marketplaces, upload the existing archive through the publisher websites.
 The internal manifest provides publisher/name/version; the local filename does not
@@ -302,25 +264,9 @@ push workflow deploys to GitHub Pages after merge. Verify that deployment before
 editor distribution complete. Do not rebuild the extension or reset user storage merely
 to replace the bundled archive.
 
-### 1.6.0 icon-only distribution correction
-
-For 1.6.0, use `vscode-openapi-toolkit-1.6.0-marketplace.vsix` from the GitHub
-release for extension distribution. The original archive has a 1100x1100 icon that
-Marketplace rejected; the corrected archive uses a 256x256 PNG rendered from the
-unchanged `images/icon.svg`. Only `extension/images/icon.png` differs among the
-extracted files. Runtime bundles, version metadata, README, changelog and notices
-are unchanged; ZIP compression and bookkeeping can differ after repackaging.
-
-This is an explicitly approved, one-time icon-only exception to the retained-artifact
-rule, not a rebuild or replacement of the original release. Preserve the original
-`vscode-openapi-toolkit-1.6.0.vsix` filename, asset and bytes, plus the original
-`release-record.json`. The corrected archive has a separate filename and SHA-256;
-its identity and verification are documented in
+1.6.0 is the one exception to distributing the retained VSIX: Marketplace rejected its
+icon, so it is distributed as `vscode-openapi-toolkit-1.6.0-marketplace.vsix`, an
+icon-only correction attached to the same GitHub release. The original archive and record
+stay unchanged; see
 [vsix-correction.md](https://github.com/speclynx/vscode-openapi-toolkit/releases/download/v1.6.0/vsix-correction.md)
-and highlighted in the v1.6.0 release notes. The original record continues to describe
-only the original CI artifacts; release CI retries continue using those originals.
-
-The extension version remains 1.6.0 because that version had not been published to
-Marketplace when the correction was prepared. Do not move the tag, republish npm,
-change the Claude payload/catalog or overwrite existing assets for this correction.
-Future releases package the corrected source icon through the normal release workflow.
+and the v1.6.0 release notes.
